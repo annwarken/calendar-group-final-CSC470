@@ -29,7 +29,7 @@ $('#save-event').on('click', () => {
     // Returns to main page after saving 
 });
 
-$('#save-event').on('click', () => {
+$('#exit-event-details').on('click', () => {
     // Calls ExitDetails() 
     // Returns to main page 
     // Any changes made are discarded 
