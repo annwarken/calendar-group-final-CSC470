@@ -17,7 +17,8 @@ app.get("/", function(req, res) {
 });
 
 const PORT = 8080;
-const HOST = '192.168.1.104';
+const HOST = '192.168.1.104'; //Server IP 192.168.1.104:8080
+//const HOST = '127.0.0.1'; //Local IP 127.0.0.1:8080
 app.listen(PORT, HOST, () => {
     console.log(`Server is running on http://${HOST}:${PORT}`);
   });
