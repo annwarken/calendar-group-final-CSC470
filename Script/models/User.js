@@ -1,6 +1,9 @@
-const mongoose=require("mongoose")
+const mongoose=require("mongoose"),
+    Schema = mongoose.Schema,
+    bcrypt = require("bcrypt"),
+    SALT_WORK_FACTOR = 10;
 
-conn = mongoose.connect("mongodb+srv://client:qjEKnFxFYIFOPRrq@calendarcluster.igx4v.mongodb.net/")
+conn = mongoose.connect("mongodb+srv://client:qjEKnFxFYIFOPRrq@calendarcluster.igx4v.mongodb.net/Calendar")
 .then(()=>{
     console.log("mongo db connected");
 })
@@ -9,19 +12,20 @@ conn = mongoose.connect("mongodb+srv://client:qjEKnFxFYIFOPRrq@calendarcluster.i
 })
 
 const UserSchema=new mongoose.Schema({
-    usename:{
+    username:{
         type:String,
-        required:true
+        required:true,
+        index: { unique: true }
     },
     password:{
         type:String,
         required:true
     },
-    firstName:{
+    firstname:{
         type:String,
         required:true
     },
-    lastName:{
+    lastname:{
         type:String,
         required:true
     },
@@ -31,5 +35,31 @@ const UserSchema=new mongoose.Schema({
     }
 })
 
-const UserCollection = new mongoose.model("User", UserSchema)
-module.exports=UserCollection
+// this code is from https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1
+UserSchema.pre('save', function (next) {
+    const user = this;
+  
+    if (!user.isModified('password')) return next();
+  
+    bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+      if (err) return next(err);
+  
+      bcrypt.hash(user.password, salt, function (err, hash) {
+        if (err) return next(err);
+  
+        user.password = hash;
+        next();
+      });
+    });
+  });
+
+// this code is from https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1
+  UserSchema.methods.comparePassword = function(candidatePassword, cb) {
+    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+      if (err) return cb(err);
+      cb(null, isMatch);
+    });
+  };
+
+const User = new mongoose.model("User", UserSchema)
+module.exports = User;
