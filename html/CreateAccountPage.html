@@ -8,15 +8,15 @@
  </head>
  <body>
     <h2>Create Account</h2>
-    <form action="/CreateAccount" method="post">
-        <input type="text" name="username" placeholder="Username"><br>
-        <input type="password" name="password" placeholder="Password"><br>
-        <input type="text" name="firstname" placeholder="First Name">
-        <input type="text" name="lastname" placeholder="Last Name"><br>
-        <input type="email" name="email" placeholder="Email"><br>
+    <form id="createAccountForm" action="/CreateAccount" method="post">
+        <input type="text" name="username" id="username" placeholder="Username"><br>
+        <input type="password" id="password" name="password" placeholder="Password"><br>
+        <input type="text" id="firstname" name="firstname" placeholder="First Name">
+        <input type="text" id="lastname" name="lastname" placeholder="Last Name"><br>
+        <input type="email" id="email" name="email" placeholder="Email"><br>
+        <input type="submit" value="Create Account">
     </form>
-    <button name="create-account" id="create-account">Create Account</button>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/Script/CreateAccount.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>
 </html>
