@@ -4,3 +4,66 @@
      The user can select tasks on the task section on the right side to open the task details.
      The user can check off a task from the task section.
      The user can logout. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendar App</title>
+    <link rel="stylesheet" href="../stylesheets/Main.css">
+    <!-- FullCalendar Links -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script> 
+</head>
+<body>
+
+<div class="container">
+    <!-- Left: List of events for the selected day -->
+    <div class="left">
+        <h3>Events List</h3>
+        <ul id="eventList">
+            <!-- Events for the selected day will be displayed here -->
+        </ul>
+    </div>
+
+    <!-- Middle: FullCalendar Monthly View -->
+    <div class="middle">
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Right: To-do list for the selected day -->
+    <div class="right">
+        <h3>To-Do List</h3>
+        <ul id="todoList">
+            <!-- To-do items for the selected day will be displayed here -->
+        </ul>
+        <input type="text" id="newTodoInput" placeholder="Add a new task">
+        <button onclick="addTodo()">+</button>
+    </div>
+</div>
+
+<!-- FullCalendar Script -->
+<script>
+
+    $(document).ready(function() {
+    $('#calendar').fullCalendar();
+    });
+
+
+    // To-Do List Logic
+    function addTodo() {
+        const todoInput = document.getElementById('newTodoInput');
+        const todoListEl = document.getElementById('todoList');
+        if (todoInput.value.trim() !== '') {
+            const li = document.createElement('li');
+            li.textContent = todoInput.value;
+            todoListEl.appendChild(li);
+            todoInput.value = '';
+        }
+    }
+</script>
+</body>
+</html>

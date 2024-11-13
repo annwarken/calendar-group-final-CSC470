@@ -1,3 +1,38 @@
 <!-- This page will display the current tasks's name, date, and description.
      Here the user can edit the details of the task.
      The user can then choose to close, save, or delete the current task. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Details</title>
+    <link rel="stylesheet" href="../stylesheets/Details.css">
+</head>
+<body>
+<header>
+     <input type="button" id="close-page" value="x" class="btn w-100">
+     <h1>Task Details</h1>
+</header>
+<main>
+    <div class="container">
+          <div class="item">
+               <label id="task-name" for="task-name-entered">Name:</label>
+               <input type="text" name="task-name-entered" id="task-name">
+               <small id="task-name-validation" class="text-danger font-weight-bold"></small>
+          </div>
+          <div class="item">
+               <label id="task-description" for="task-description-entered">Description:</label>
+               <textarea name="task-description-entered" id="task-description"></textarea>
+               <small id="task-description-validation" class="text-danger font-weight-bold"></small>
+           </div>
+     </div>
+     <div class="buttons">
+          <input type="button" id="save-task" value="Save" class="btn w-100">
+          <input type="button" id="delete-task" value="Delete" class="btn w-100">
+     </div>
+
+</main>
+<script src="TaskDetails.js"></script>
+</body>
+</html>
