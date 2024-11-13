@@ -1,3 +1,48 @@
 <!-- This page will display the current event's title, date, time, and description.
      Here the user can edit the details of the event.
      The user can then choose to close, save, or delete the current event. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Details</title>
+    <link rel="stylesheet" href="../stylesheets/Details.css">
+</head>
+<body>
+<header>
+     <input type="button" id="close-page" value="x" class="btn w-100">
+     <h1>Event Details</h1>
+</header>
+<main>
+    <div class="container">
+          <div class="item">
+               <label id="event-title" for="event-title-entered">Title:</label>
+               <input type="text" name="event-title-entered" id="event-title">
+               <small id="event-title-validation" class="text-danger font-weight-bold"></small>
+          </div>
+          <div class="item">
+               <label id="event-date" for="event-date-entered">Date:</label>
+               <input type="text" name="event-date-entered" id="event-date">
+               <small id="event-date-validation" class="text-danger font-weight-bold"></small>
+          </div>
+          <div class="item">
+               <label id="event-time" for="event-time-entered">Time:</label>
+               <input type="text" name="event-time-entered" id="event-time">
+               <small id="event-time-validation" class="text-danger font-weight-bold"></small>
+          </div>
+          <div class="item">
+               <label id="event-description" for="event-description-entered">Description:</label>
+               <textarea name="event-description-entered" id="event-description"></textarea>
+               <small id="event-description-validation" class="text-danger font-weight-bold"></small>
+           </div>
+     </div>
+     <div class="buttons">
+          <input type="button" id="save-event" value="Save" class="btn w-100">
+          <input type="button" id="delete-event" value="Delete" class="btn w-100">
+     </div>
+
+</main>
+<script src="EventDetails.js"></script>
+</body>
+</html>
