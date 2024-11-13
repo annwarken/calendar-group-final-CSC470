@@ -31,7 +31,7 @@ app.post("/Login", function(req, res) {
     console.log('Successfully logged in!', CurrentUser._id)
 
     res.status(200);
-    res.redirect("/MainPage");
+    res.redirect("/Calendar");
     res.end();
 });
 
@@ -58,7 +58,15 @@ app.post("/CreateAccount", function(req, res){
         console.error('Error creating account:', error);
         console.log('Internal server error')
     }
-})
+});
+
+app.get("Calendar", function(req, res) {
+    let contents = fs.readFileSync("./html/MainPage.html");
+    res.header("Content-Type", "text/html");
+    res.status(200);
+    res.send(contents);
+    res.end();
+});
 
 const PORT = 8080;
 // const HOST = '192.168.1.104'; //Server IP 192.168.1.104:8080
