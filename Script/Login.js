@@ -14,6 +14,11 @@ $('#log-in').on('click', () => {
     // Calls VerifyUser(username, password)
 });
 
-$('#create-account').on('click', () => {
-    // changes current window to create account page
+
+window.addEventListener("load", function() {
+    let createAccountButton = this.document.querySelector("create-account");
+
+    createAccountButton.addEventListener("click", function() {
+        console.log("/CreateAccount");
+    });
 });
