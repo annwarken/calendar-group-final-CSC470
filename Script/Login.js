@@ -9,16 +9,17 @@ function VerifyUser(username, password) {
 }
 
 // Buttons ///////////////////////////////
-$('#log-in').on('click', () => {
-    // takes username and password from page
-    // Calls VerifyUser(username, password)
-});
+// $('#log-in').on('click', () => {
+//     // takes username and password from page
+//     // Calls VerifyUser(username, password)
+// });
 
 
 window.addEventListener("load", function() {
-    let createAccountButton = this.document.querySelector("create-account");
+    let createAccountButton = document.querySelector("#create-account");
 
     createAccountButton.addEventListener("click", function() {
         console.log("/CreateAccount");
+        window.location.href = "/CreateAccount";
     });
 });
