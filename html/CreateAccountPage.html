@@ -1,1 +1,22 @@
 <!-- The user can enter their username, password, first name, last name, and email to create a new account. -->
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+ </head>
+ <body>
+    <h2>Create Account</h2>
+    <form id="createAccountForm" action="/CreateAccount" method="post">
+        <input type="text" name="username" id="username" placeholder="Username"><br>
+        <input type="password" id="password" name="password" placeholder="Password"><br>
+        <input type="text" id="firstname" name="firstname" placeholder="First Name">
+        <input type="text" id="lastname" name="lastname" placeholder="Last Name"><br>
+        <input type="email" id="email" name="email" placeholder="Email"><br>
+        <input type="submit" value="Create Account">
+    </form>
+    <script src="/Script/CreateAccount.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>
