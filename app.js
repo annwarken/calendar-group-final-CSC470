@@ -12,33 +12,25 @@ app.use(express.static("public"));
 app.use("/Script", express.static(path.join(__dirname, "Script")));
 
 // server functions
-async function GetUser(username) {
-    // returns user struct filled with user's info from database
-    const user = await User.findOne({ username: username });
-        
-        //if user is not found return false and log
-        if (!user) {
-            console.log("User not found");
-            return false;
-        }
-}
-
 async function VerifyUser(username, password) {
     // calls GetUser(username) 
     // check database password with entered password 
     // returns bool
     try {
         // Find the user by username
-        const user = GetUser(username);
+        const user = await User.findOne({ username: username });
+        
+        //if user is not found return false and log
+        if (!user) {
+            console.log("User not found");
+            return false;
+        }
 
         // Compare the provided password with the user's stored password
-        // const isMatch = await user.comparePassword(password, function(err, isMatch) {
-        //     if (err) throw err;
-        // });
-        // console.log(password, isMatch);
+        // this code is from https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1
         user.comparePassword(password, function(err, isMatch) {
             if (err) throw err;
-            console.log(password, isMatch); // -> Password123: true
+            console.log(password, isMatch);
         });
         return true;
         
