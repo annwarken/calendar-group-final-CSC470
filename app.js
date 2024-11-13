@@ -19,6 +19,18 @@ app.get("/", function(req, res) {
     res.end();
 });
 
+app.get("/Login", function(req, res) {
+    let contents = fs.readFileSync("./html/LoginPage.html");
+    res.header("Content-Type", "text/html");
+    res.status(200);
+    res.send(contents);
+    res.end();
+});
+
+app.post("/Login", function(req, res) {
+    
+});
+
 app.get("/CreateAccount", function(req, res) {
     let contents = fs.readFileSync("./html/CreateAccountPage.html");
     res.header("Content-Type", "text/html");

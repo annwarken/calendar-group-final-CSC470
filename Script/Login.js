@@ -13,3 +13,7 @@ $('#log-in').on('click', () => {
     // takes username and password from page
     // Calls VerifyUser(username, password)
 });
+
+$('#create-account').on('click', () => {
+    // changes current window to create account page
+});
