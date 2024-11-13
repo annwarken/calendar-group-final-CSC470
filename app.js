@@ -31,6 +31,8 @@ async function VerifyUser(username, password) {
         user.comparePassword(password, function(err, isMatch) {
             if (err) throw err;
             console.log(password, isMatch);
+            if(!isMatch)
+                return false;
         });
         return true;
         
