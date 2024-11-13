@@ -17,16 +17,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 </head>
 <body>
-
+<header>
+    <h1>Welcome, User</h1>
+</header>
+<main>
 <div class="container">
     <!-- Left: List of events for the selected day -->
     <div class="left">
-        <h3>Events List</h3>
+        <h2>Event List</h2>
         <ul id="eventList">
             <!-- Events for the selected day will be displayed here -->
         </ul>
+        <input type="button" class="btn w-100" id="add-event" value="+">
     </div>
 
     <!-- Middle: FullCalendar Monthly View -->
@@ -36,12 +41,13 @@
 
     <!-- Right: To-do list for the selected day -->
     <div class="right">
-        <h3>To-Do List</h3>
+        <h2>To-Do List</h2>
         <ul id="todoList">
             <!-- To-do items for the selected day will be displayed here -->
         </ul>
         <input type="text" id="newTodoInput" placeholder="Add a new task">
-        <button onclick="addTodo()">+</button>
+        <input type="button" class="btn w-100" id="add-task" value="+">
+        <!-- <button onclick="addTodo()">+</button> -->
     </div>
 </div>
 
@@ -49,12 +55,14 @@
 <script>
 
     $(document).ready(function() {
-    $('#calendar').fullCalendar();
+    $('#calendar').fullCalendar({
+        fixedWeekCount: true,
+    });
     });
 
 
     // To-Do List Logic
-    function addTodo() {
+    $('#add-task').on('click', (evt) => {
         const todoInput = document.getElementById('newTodoInput');
         const todoListEl = document.getElementById('todoList');
         if (todoInput.value.trim() !== '') {
@@ -63,7 +71,8 @@
             todoListEl.appendChild(li);
             todoInput.value = '';
         }
-    }
+    });
 </script>
+</main>
 </body>
 </html>
