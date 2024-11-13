@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
 const User=require("./Script/models/User")
+const User=require("./Script/models/User")
 const path = require("path");
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -12,11 +13,7 @@ app.use(express.static("public"));
 app.use("/Script", express.static(path.join(__dirname, "Script")));
 
 app.get("/", function(req, res) {
-    let contents = fs.readFileSync("./html/HelloWorld.html");
-    res.header("Content-Type", "text/html");
-    res.status(200);
-    res.send(contents);
-    res.end();
+    res.redirect('/Login');
 });
 
 app.get("/Login", function(req, res) {
@@ -44,11 +41,24 @@ app.get("/CreateAccount", function(req, res) {
 });
 
 app.post("/CreateAccount", function(req, res){
-    // Go back to login page here
+    try{
+        const {username, password, firstname, lastname, email} = req.body
+        const CurrentUser = new User({
+            username, password, firstname, lastname, email
+        })
+        CurrentUser.save()
+        console.log('Account created successfully!', CurrentUser._id)
+        res.status(200);
+        res.redirect('/Login');
+        res.end();
+    } catch (error) {
+        console.error('Error creating account:', error);
+        console.log('Internal server error')
+    }
 })
 
 const PORT = 8080;
-//const HOST = '192.168.1.104'; //Server IP 192.168.1.104:8080
+// const HOST = '192.168.1.104'; //Server IP 192.168.1.104:8080
 const HOST = '127.0.0.1'; //Local IP 127.0.0.1:8080
 app.listen(PORT, HOST, () => {
     console.log(`Server is running on http://${HOST}:${PORT}`);
