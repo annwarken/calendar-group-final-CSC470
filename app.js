@@ -12,11 +12,7 @@ app.use(express.static("public"));
 app.use("/Script", express.static(path.join(__dirname, "Script")));
 
 app.get("/", function(req, res) {
-    let contents = fs.readFileSync("./html/HelloWorld.html");
-    res.header("Content-Type", "text/html");
-    res.status(200);
-    res.send(contents);
-    res.end();
+    res.redirect('/Login');
 });
 
 app.get("/CreateAccount", function(req, res) {
