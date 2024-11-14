@@ -34,12 +34,14 @@ header .btn {
 
 /* styles for the main content */
 main {
-
     margin: 0 1.5%;
+    text-align: center;
 }
 .container {
     padding-left: 50px;
 }
+
+/* styles for EventDetailsPage and TaskDetailsPage */
 .item {
     padding: 10px;
 }
@@ -47,20 +49,24 @@ label {
     font-size: 20px;
 }
 #event-title, #event-date {  
-    width: 210px;          
-    height: 20px;                    
+    width: 190px;          
+    height: 10px;
+    padding: 5px;                    
 }
 #event-time {  
-    width: 207px;          
-    height: 20px;                    
+    width: 187px;          
+    height: 10px;   
+    padding: 5px;                  
 }
 #task-name {
-    width: 203px;          
-    height: 20px;
+    width: 183px;          
+    height: 10px;
+    padding: 5px; 
 }
 textarea {
-    width: 262px;
+    width: 253px;
     height: 60px;
+    padding: 5px; 
 }
 
 /* style for buttons */
@@ -75,44 +81,27 @@ textarea {
     height: 30px;
 }
 
-/*
-/* mobile landscape to tablet portrait 
-@media only screen and (max-width: 767px) {
-    header img {
-        float: none;
-    }
-    header {
-        text-align: center;
-    }
-    main {
-        flex-direction: column;
-    }
-    section {
-        width: 100%;
-        order: 1;
-    }
-    aside {
-        width: 100%;
-        order: 2;
-        margin: 0 auto;
-    }
-    aside ul li a {
-        width: 100%;
-        padding: 0.5em 0;
-        text-align: center;
-    }
-    #nav_menu {
-        display: none;
-    }
-    .slicknav_menu {
-        display: block;
-        background-color: #305030 !important;
-    }
+/* styles for CreateAccountPage and LoginPage */
+form {
+    text-align: center;
 }
-
-/* mobile portrait to mobile landscape 
-@media only screen and (max-width: 479px) {
-    body {
-        font-size: 85%;
-    }
-}*/
+form input {
+    width: 250px;
+    height: 20px; 
+    padding: 5px;
+    margin: 10px;
+}
+input[type="submit"] {
+    width: 120px;
+    height: 30px;
+    border-width: 2px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+#create-account  {
+    border-width: 2px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    width: 120px;
+    height: 30px;
+}
