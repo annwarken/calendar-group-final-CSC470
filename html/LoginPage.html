@@ -2,20 +2,23 @@
      The user can provide their username and password to login. -->
 <!DOCTYPE html>
 <html lang="en">
-     <head>
-          <meta charset="UTF-8">
-          <title>Benchmark 1</title>
-          <script src="../Script/Login.js"></script>
-     </head>
-     <body>
-          <main>
-               <h1>Login</h1>
-               <form method="post" action="/Login">
-               <input placeholder="Username" type="text" name="username" id="username"><br>
-               <input placeholder="Password" type="password" name="password" id="password"><br>
-               <input type="submit" value="Login">
-               </form>
-               <button type="button" id="create-account">Create Account</button>
-          </main>
-     </body>
+<head>
+     <meta charset="UTF-8">
+     <title>Login</title>
+     <script src="../Script/Login.js"></script>
+     <link rel="stylesheet" href="../stylesheets/Details.css">
+</head>
+<body>
+<header>
+     <h1>Login</h1>
+</header>
+<main>
+     <form method="post" action="/Login">
+          <input placeholder="Username" type="text" name="username" id="username"><br>
+          <input placeholder="Password" type="password" name="password" id="password"><br>
+          <input type="submit" value="Login">
+     </form>
+     <button type="button" id="create-account">Create Account</button>
+</main>
+</body>
 </html>

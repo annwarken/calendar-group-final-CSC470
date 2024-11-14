@@ -4,10 +4,14 @@
  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Create Account</title>
+    <link rel="stylesheet" href="../stylesheets/Details.css">
  </head>
  <body>
-    <h2>Create Account</h2>
+ <header>
+    <h1>Create Account</h1>
+ </header>
+ <main>
     <form id="createAccountForm" action="/CreateAccount" method="post">
         <input type="text" name="username" id="username" placeholder="Username"><br>
         <input type="password" id="password" name="password" placeholder="Password"><br>
@@ -16,5 +20,6 @@
         <input type="email" id="email" name="email" placeholder="Email"><br>
         <input type="submit" value="Create Account">
     </form>
+ </main>
 </body>
 </html>
