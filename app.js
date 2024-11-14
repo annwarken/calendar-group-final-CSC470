@@ -11,8 +11,71 @@ app.use(cookieParser());
 app.use(express.static("public"));
 app.use("/Script", express.static(path.join(__dirname, "Script")));
 
+// server functions
+async function VerifyUser(username, password) {
+    // calls GetUser(username) 
+    // check database password with entered password 
+    // returns bool
+    try {
+        // Find the user by username
+        const user = await User.findOne({ username: username });
+        
+        //if user is not found return false and log
+        if (!user) {
+            console.log("User not found");
+            return false;
+        }
+
+        // Compare the provided password with the user's stored password
+        // this code is from https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1
+        user.comparePassword(password, function(err, isMatch) {
+            if (err) throw err;
+            console.log(password, isMatch);
+            if(!isMatch)
+                return false;
+        });
+        return true;
+        
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// GET and POST functions
 app.get("/", function(req, res) {
     res.redirect('/Login');
+});
+
+app.get("/Login", function(req, res) {
+    let contents = fs.readFileSync("./html/LoginPage.html");
+    res.header("Content-Type", "text/html");
+    res.status(200);
+    res.send(contents);
+    res.end();
+});
+
+app.post("/Login", function(req, res) {
+    try{
+        const {username, password} = req.body
+        const CurrentUser = new User({
+            username, password
+        });
+        //verify user
+        const isVerified = VerifyUser(username, password);
+        if(!isVerified) {
+            console.log("User could not be verified");
+        }
+
+        //save data in cookie
+
+        console.log('Successfully logged in!', CurrentUser._id)
+        res.status(200);
+        res.redirect("/Calendar");
+        res.end();
+    } catch (error) {
+        console.error('Error creating account:', error);
+        console.log('Internal server error')
+    }
 });
 
 app.get("/CreateAccount", function(req, res) {
@@ -38,7 +101,17 @@ app.post("/CreateAccount", function(req, res){
         console.error('Error creating account:', error);
         console.log('Internal server error')
     }
-})
+});
+
+app.get("/Calendar", function(req, res) {
+    //TODO: check if user is logged in before loading
+
+    let contents = fs.readFileSync("./html/MainPage.html");
+    res.header("Content-Type", "text/html");
+    res.status(200);
+    res.send(contents);
+    res.end();
+});
 
 const PORT = 8080;
 // const HOST = '192.168.1.104'; //Server IP 192.168.1.104:8080
