@@ -3,13 +3,13 @@ function ExitDetails() {
     // Sets currentEvent to null 
 }
 
-function SaveEvent() {
+function SaveTask() {
     // Uses currentEvent variable that is set on main page 
     // Updates the selected event in the database 
     // Returns status code (int)
 }
 
-function DeleteEvent() {
+function DeleteTask() {
     // Uses currentEvent variable that is set on main page 
     // Removes the selected event from the database 
     // Returns status code (int)
@@ -17,19 +17,19 @@ function DeleteEvent() {
 
 // Buttons ///////////////////////////////
 
-$('#delete-event').on('click', () => {
-    // Calls DeleteEvent 
+$('#delete-task').on('click', () => {
+    // Calls DeleteTask
     // Calls ExitDetails() 
     // Returns to main page after deleting 
 });
 
-$('#save-event').on('click', () => {
-    // Calls SaveEvent 
+$('#save-task').on('click', () => {
+    // Calls SaveTask
     // Calls ExitDetails() 
     // Returns to main page after saving 
 });
 
-$('#exit-event-details').on('click', () => {
+$('#exit').on('click', () => {
     // Calls ExitDetails() 
     // Returns to main page 
     // Any changes made are discarded 

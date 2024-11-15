@@ -1,0 +1,73 @@
+ 
+/* style for header */
+header {
+    text-align: center;
+    background-color: grey;
+    border: 5px double black;
+    margin: 0;
+    padding-bottom: 10px;
+}
+header h1{
+    color: white;
+    font-family: "Comic Sans MS", Comic Sans, cursive;
+    font-weight: bold;
+}
+
+/* styles for main */
+main {
+    background-color: lightgray;
+    border: 5px double black;
+    border-top: none;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.container {
+    padding: 0 !important;
+    display: flex;
+    flex-wrap: nowrap;
+    height: 600px;
+}
+.container h2 {
+    font-family: "Comic Sans MS", Comic Sans, cursive;
+    text-align: center;
+}
+
+/* style for event list */
+.left {
+    width: 200px;
+    margin-right: 15px;
+    border: 1px solid black;
+}
+#eventList {
+    list-style-type: none;
+    text-align: left;
+}
+#add-event, #add-task {
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    border-color: black;
+    border-width: 1.5px;
+    border-radius: 50%;
+    margin: 20px;
+    padding: 0;
+}
+
+/* styles for calendar */
+.middle {
+    width: 740px;
+    padding: 10px;
+    border: 1px solid black;
+    background-color: white;
+}
+
+/* styles for to-do list */
+.right {
+    width: 200px;
+    margin-left: 15px;
+    border: 1px solid black;
+}
+#todoList {
+    list-style-type: none;
+    text-align: left;
+}

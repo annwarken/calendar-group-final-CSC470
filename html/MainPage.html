@@ -4,3 +4,73 @@
      The user can select tasks on the task section on the right side to open the task details.
      The user can check off a task from the task section.
      The user can logout. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendar App</title>
+    <link rel="stylesheet" href="../stylesheets/Main.css">
+    <!-- FullCalendar Links -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+</head>
+<body>
+<header>
+    <h1>Welcome, User</h1>
+</header>
+<main>
+<div class="container">
+    <!-- Left: List of events for the selected day -->
+    <div class="left">
+        <h2>Event List</h2>
+        <ul id="eventList">
+            <!-- Events for the selected day will be displayed here -->
+        </ul>
+        <input type="button" class="btn w-100" id="add-event" value="+">
+    </div>
+
+    <!-- Middle: FullCalendar Monthly View -->
+    <div class="middle">
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Right: To-do list for the selected day -->
+    <div class="right">
+        <h2>To-Do List</h2>
+        <ul id="todoList">
+            <!-- To-do items for the selected day will be displayed here -->
+        </ul>
+        <input type="text" id="newTodoInput" placeholder="Add a new task">
+        <input type="button" class="btn w-100" id="add-task" value="+">
+    </div>
+</div>
+
+<!-- FullCalendar Script -->
+<script>
+    $(document).ready(function() {
+    $('#calendar').fullCalendar({
+        fixedWeekCount: true,
+    });
+    });
+
+    // To-Do List Logic
+    $('#add-task').on('click', (evt) => {
+        const todoInput = document.getElementById('newTodoInput');
+        const todoListEl = document.getElementById('todoList');
+        if (todoInput.value.trim() !== '') {
+            const li = document.createElement('li');
+            li.textContent = todoInput.value;
+            todoListEl.appendChild(li);
+            todoInput.value = '';
+        }
+    });
+</script>
+</main>
+<script src="TaskDetails.js"></script>
+</body>
+</html>

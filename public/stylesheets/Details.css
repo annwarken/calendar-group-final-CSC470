@@ -1,0 +1,107 @@
+/* the styles for the elements */
+*{
+    margin: 0;
+    padding: 0;
+}
+html {
+    background-color: #fefefe;
+}
+
+/* the styles for the body */
+body {
+    max-width: 400px;
+    width: 100%;
+    border: 5px double #575757;
+    background-color: #e3e3e3;
+    border-radius: 5px;
+    margin: 0 auto;
+}
+
+/* styles for the header */
+header {
+    padding: 0.5em 0.5em;
+    text-align: center;
+    font-size: 1.5em;
+}
+header .btn {
+    font-size: 18px;
+    width: 25px;
+    height: 25px;
+    border-width: 2px;
+    border-radius: 50%;
+    float: right;
+}
+
+/* styles for the main content */
+main {
+    margin: 0 1.5%;
+    text-align: center;
+}
+.container {
+    padding-left: 50px;
+}
+
+/* styles for EventDetailsPage and TaskDetailsPage */
+.item {
+    padding: 10px;
+}
+label {
+    font-size: 20px;
+}
+#event-title, #event-date {  
+    width: 190px;          
+    height: 10px;
+    padding: 5px;                    
+}
+#event-time {  
+    width: 187px;          
+    height: 10px;   
+    padding: 5px;                  
+}
+#task-name {
+    width: 183px;          
+    height: 10px;
+    padding: 5px; 
+}
+textarea {
+    width: 253px;
+    height: 60px;
+    padding: 5px; 
+}
+
+/* style for buttons */
+.buttons {
+    padding: 15px;
+    text-align: center;
+}
+.buttons .btn {
+    border-width: 2px;
+    margin: 0 10px;
+    width: 60px;
+    height: 30px;
+}
+
+/* styles for CreateAccountPage and LoginPage */
+form {
+    text-align: center;
+}
+form input {
+    width: 250px;
+    height: 20px; 
+    padding: 5px;
+    margin: 10px;
+}
+input[type="submit"] {
+    width: 120px;
+    height: 30px;
+    border-width: 2px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+#create-account  {
+    border-width: 2px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    width: 120px;
+    height: 30px;
+}
