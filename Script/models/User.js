@@ -54,12 +54,14 @@ UserSchema.pre('save', function (next) {
   });
 
 // this code is from https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1
-  UserSchema.methods.comparePassword = function(candidatePassword, cb) {
+UserSchema.methods.comparePassword = function(candidatePassword) {
+  return new Promise((resolve, reject) => {
     bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-      if (err) return cb(err);
-      cb(null, isMatch);
+      if (err) return reject(err);
+      resolve(isMatch);
     });
-  };
+  });
+};
 
 const User = new mongoose.model("User", UserSchema)
 module.exports = User;
