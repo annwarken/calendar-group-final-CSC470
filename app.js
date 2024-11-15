@@ -3,7 +3,7 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
-const User=require("./Script/models/User")
+const User=require("./public/Script/models/User")
 const path = require("path");
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -71,6 +71,8 @@ app.post("/Login", async function(req, res) {
             res.end();
         }
         else {
+            //TODO: inform user login failed
+
             console.log("User could not be verified");
             res.status(401); //error code for unauthorized user
             res.redirect("/Login");
