@@ -21,23 +21,21 @@ async function VerifyUser(username, password) {
         const user = await User.findOne({ username: username });
         
         //if user is not found return false and log
-        if (!user) {
+        if (user == null) {
             console.log("User not found");
             return false;
         }
+        else {
+            console.log("Found user: ", user.username);
 
-        // Compare the provided password with the user's stored password
-        // this code is from https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1
-        user.comparePassword(password, function(err, isMatch) {
-            if (err) throw err;
+            // Compare the provided password with the user's stored password
+            const isMatch = await user.comparePassword(password);
             console.log(password, isMatch);
-            if(!isMatch)
-                return false;
-        });
-        return true;
-        
+            return isMatch;
+        }
     } catch (err) {
         console.error(err);
+        return false;
     }
 }
 
@@ -54,24 +52,31 @@ app.get("/Login", function(req, res) {
     res.end();
 });
 
-app.post("/Login", function(req, res) {
+app.post("/Login", async function(req, res) {
     try{
         const {username, password} = req.body
         const CurrentUser = new User({
             username, password
         });
+
         //verify user
-        const isVerified = VerifyUser(username, password);
-        if(!isVerified) {
-            console.log("User could not be verified");
+        const isVerified = await VerifyUser(username, password);
+
+        if(isVerified) {
+            //TODO: save data in cookie
+
+            console.log('Successfully logged in!', CurrentUser._id)
+            res.status(200);
+            res.redirect("/Calendar");
+            res.end();
         }
-
-        //save data in cookie
-
-        console.log('Successfully logged in!', CurrentUser._id)
-        res.status(200);
-        res.redirect("/Calendar");
-        res.end();
+        else {
+            console.log("User could not be verified");
+            res.status(401); //error code for unauthorized user
+            res.redirect("/Login");
+            res.end();
+        }
+        
     } catch (error) {
         console.error('Error creating account:', error);
         console.log('Internal server error')
