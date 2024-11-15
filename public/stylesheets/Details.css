@@ -35,7 +35,6 @@ header .btn {
 /* styles for the main content */
 main {
     margin: 0 1.5%;
-    text-align: center;
 }
 .container {
     padding-left: 50px;
@@ -104,4 +103,7 @@ input[type="submit"] {
     margin-bottom: 20px;
     width: 120px;
     height: 30px;
+}
+.create-account {
+    text-align: center;
 }
