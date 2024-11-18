@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="../stylesheets/Main.css">
     <!-- FullCalendar Links -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/> 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script> 
@@ -55,8 +55,21 @@
     $(document).ready(function() {
     $('#calendar').fullCalendar({
         fixedWeekCount: true,
+        events: function(fetchInfo) {
+            return fetch('../../api/events')  // Fetch events from the /api/events endpoint
+                .then(response => response.json())  // Parse the response as JSON
+                .then(data => {
+                    console.log("events fetched");
+                    console.log(data);
+                    return data;  // Return the event data to FullCalendar
+                })
+                .catch(error => {
+                    console.error('Error fetching events:', error);
+                    return [];  // Return an empty array in case of an error
+                });
+        }
     });
-    });
+    }, { passive: true });
 
     // To-Do List Logic
     $('#add-task').on('click', (evt) => {
@@ -71,6 +84,6 @@
     });
 </script>
 </main>
-<script src="TaskDetails.js"></script>
+<!-- <script src="TaskDetails.js"></script> -->
 </body>
 </html>
