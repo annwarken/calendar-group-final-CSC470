@@ -1,3 +1,38 @@
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: function(fetchInfo) {
+            // Dynamically fetch events based on the calendar's visible range
+            return fetch('../../api/events')  // Replace with your backend's endpoint
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();  // Parse response JSON
+                })
+                .then(data => {
+                    console.log("Fetched events:", data);
+                    return data;  // Provide events to FullCalendar
+                })
+                .catch(error => {
+                    console.error('Error fetching events:', error);
+                    return [];  // Provide an empty array on error
+                });
+        }
+
+    });
+    calendar.render();
+  });
+
+
+
+
+
+
+
+
+
 function LoadMain() {
     // Renders calendar  
     // GetEvent(currentEvent.ID) - displays details on page 
