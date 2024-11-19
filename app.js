@@ -7,7 +7,8 @@ const User=require("./public/Script/models/User");
 const Event=require("./public/Script/models/Event");
 const path = require("path");
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cookieParser());
 app.use(express.static("public"));
 app.use("/Script", express.static(path.join(__dirname, "Script")));
@@ -57,41 +58,37 @@ app.get("/Login", function(req, res) {
     res.end();
 });
 
-app.post("/Login", async function(req, res) {
-    try{
-        const {username, password} = req.body
-        const CurrentUser = new User({
-            username, password
-        });
-
-        //verify user
+app.post("/Login", async function (req, res) {
+    try {
+        // TODO save data in cookie
+        
+        const { username, password } = req.body;
+        
+        // Verify user credentials
         const isVerified = await VerifyUser(username, password);
 
-        if(isVerified) {
-            //TODO: save data in cookie
-
+        if (isVerified) {
+            // Set the session user
             SessionUser = await User.findOne({ username });
-            console.log(SessionUser);
 
-            console.log('Successfully logged in!', CurrentUser._id);
-            res.status(200);
-            res.redirect("/Calendar");
-            res.end();
-        }
-        else {
-            //TODO: inform user login failed
+            console.log("Successfully logged in!", SessionUser._id);
 
+            // Redirect to the calendar page after successful login
+            return res.status(200).redirect("/Calendar");
+        } else {
             console.log("User could not be verified");
-            res.status(401); //error code for unauthorized user
-            res.redirect("/Login");
-            res.end();
+
+            // Respond with an error message for invalid credentials
+            return res.status(401).json({ error: "Invalid username or password" });
         }
-        
     } catch (error) {
-        console.error('Error creating account:', error);
-        console.log('Internal server error')
+        console.error("Error during login:", error);
+
+        // Respond with an internal server error
+        return res.status(500).json({ error: "Internal server error" });
     }
 });
+
 
 app.get("/CreateAccount", function(req, res) {
     let contents = fs.readFileSync("./html/CreateAccountPage.html");
@@ -129,7 +126,6 @@ app.get("/Calendar", async function(req, res) {
     res.end();
 });
 
-// Assuming you have a session middleware to track logged-in user
 app.get("/api/events", async function(req, res) {
     try {
         // TODO check if user is logged in
