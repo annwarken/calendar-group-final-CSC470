@@ -98,20 +98,33 @@ app.get("/CreateAccount", function(req, res) {
     res.end();
 });
 
-app.post("/CreateAccount", function(req, res){
+app.post("/CreateAccount", async function(req, res){
     try{
         const {username, password, firstname, lastname, email} = req.body
+
+        // Check if username already exists
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            console.log("Username is already in use:", username);
+
+            // Send error response if username is taken
+            return res.status(409).json({ error: "Username is already in use" }); // 409 Conflict
+        }
+
+        // Create a new user with a unique username
         const CurrentUser = new User({
             username, password, firstname, lastname, email
-        })
-        CurrentUser.save()
-        console.log('Account created successfully!', CurrentUser._id)
-        res.status(200);
-        res.redirect('/Login');
-        res.end();
+        });
+
+        await CurrentUser.save();
+
+        // account is created successfully
+        console.log('Account created successfully!', CurrentUser._id);
+        res.status(200).redirect('/Login');
     } catch (error) {
-        console.error('Error creating account:', error);
-        console.log('Internal server error')
+        // unexpected errors
+        console.error('Internal server error: ', error);
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
