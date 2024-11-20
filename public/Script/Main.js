@@ -25,7 +25,15 @@ document.addEventListener('DOMContentLoaded', function() {
     calendar.render();
   });
 
+  window.addEventListener("load", function() {
+    let logoutButton = document.querySelector("#logout");
 
+    //clears cookies and returns user to login page
+    logoutButton.addEventListener("click", function() {
+        console.log("/Logout");
+        window.location.href = "/Logout";
+    });
+});
 
 
 

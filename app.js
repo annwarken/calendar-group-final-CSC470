@@ -14,8 +14,10 @@ app.use(express.static("public"));
 app.use("/Script", express.static(path.join(__dirname, "Script")));
 
 // Current Session Variables
-let SessionUser;
-let SessionUserEvents;
+let SessionUser = null;
+let SessionUserEvents = null;
+let isVerified = false;
+let isAuth = false;
 
 // server functions
 async function VerifyUser(username, password) {
@@ -44,6 +46,30 @@ async function VerifyUser(username, password) {
         return false;
     }
 }
+async function AuthenticateUser(req, res) {
+    //checks cookies to see if user has logged in
+    //returns bool
+    try {
+        cookieValue = req.cookies?.UserSession;
+        if (!cookieValue) {
+            console.log("UserSession cookie not found");
+            return false;
+        }
+        const user = await User.findOne({ _id: cookieValue });
+        if (user == null) {
+            console.log("User not Authenticated");
+            return false;
+        }
+        else {
+            console.log("Authenticated User: ", user._id);
+            return true;
+        }
+    } catch (error) {
+        console.error("Error during user authentication:", error);
+        res.status(500).send("Internal Server Error");
+        return false;
+    }
+}
 
 // GET and POST functions
 app.get("/", function(req, res) {
@@ -60,16 +86,17 @@ app.get("/Login", function(req, res) {
 
 app.post("/Login", async function (req, res) {
     try {
-        // TODO save data in cookie
-        
         const { username, password } = req.body;
         
         // Verify user credentials
-        const isVerified = await VerifyUser(username, password);
+        isVerified = await VerifyUser(username, password);
 
         if (isVerified) {
             // Set the session user
             SessionUser = await User.findOne({ username });
+
+            //save id in cookie
+            res.cookie("UserSession", SessionUser._id);
 
             console.log("Successfully logged in!", SessionUser._id);
 
@@ -89,6 +116,13 @@ app.post("/Login", async function (req, res) {
     }
 });
 
+app.get('/Logout', (req, res) => {
+    //clear cookies and send user to login page
+    res.clearCookie('UserSession');
+    console.log('Logged out user: ', SessionUser._id);
+    SessionUser = null;
+    res.redirect('/Login');
+  });
 
 app.get("/CreateAccount", function(req, res) {
     let contents = fs.readFileSync("./html/CreateAccountPage.html");
@@ -129,7 +163,15 @@ app.post("/CreateAccount", async function(req, res){
 });
 
 app.get("/Calendar", async function(req, res) {
-    //TODO: check if user is logged in before loading
+    //check if user has logged in
+    isAuth = await AuthenticateUser(req, res);
+    if(isAuth) {
+        console.log("User authenticated successfully");
+    }
+    else {
+        console.log("Failed to authenticate user");
+        return res.status(200).redirect('/Login');
+    }
 
     let contents = fs.readFileSync("./html/MainPage.html");
 
@@ -141,7 +183,15 @@ app.get("/Calendar", async function(req, res) {
 
 app.get("/api/events", async function(req, res) {
     try {
-        // TODO check if user is logged in
+        //check if user has logged in
+        isAuth = await AuthenticateUser(req, res);
+        if(isAuth) {
+            console.log("User authenticated successfully");
+        }
+        else {
+            console.log("Failed to authenticate user");
+            return res.status(200).redirect('/Login');
+        }
 
         // Find events for the logged-in user
         SessionUserEvents = await Event.find({ createdBy: SessionUser._id }).exec();
