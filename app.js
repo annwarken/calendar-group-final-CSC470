@@ -14,8 +14,8 @@ app.use(express.static("public"));
 app.use("/Script", express.static(path.join(__dirname, "Script")));
 
 // Current Session Variables
-let SessionUser;
-let SessionUserEvents;
+let SessionUser = null;
+let SessionUserEvents = null;
 
 // server functions
 async function VerifyUser(username, password) {
@@ -60,8 +60,6 @@ app.get("/Login", function(req, res) {
 
 app.post("/Login", async function (req, res) {
     try {
-        // TODO save data in cookie
-        
         const { username, password } = req.body;
         
         // Verify user credentials
@@ -70,6 +68,9 @@ app.post("/Login", async function (req, res) {
         if (isVerified) {
             // Set the session user
             SessionUser = await User.findOne({ username });
+
+            //save id in cookie
+            res.cookie("UserSession", SessionUser._id);
 
             console.log("Successfully logged in!", SessionUser._id);
 
@@ -89,6 +90,13 @@ app.post("/Login", async function (req, res) {
     }
 });
 
+app.get('/Logout', (req, res) => {
+    //clear cookies and send user to login page
+    res.clearCookie('UserSession');
+    console.log('Logged out user: ', SessionUser._id);
+    SessionUser = null;
+    res.redirect('/Login');
+  });
 
 app.get("/CreateAccount", function(req, res) {
     let contents = fs.readFileSync("./html/CreateAccountPage.html");
