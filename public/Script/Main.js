@@ -1,5 +1,8 @@
+let selectedDay = null;
+
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
+    var eventButtonsEl = document.getElementById('eventList');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         events: function(fetchInfo) {
@@ -19,10 +22,38 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error('Error fetching events:', error);
                     return [];  // Provide an empty array on error
                 });
-        }
-
+        },
+        dateClick: async function (info) {
+            // Update the selected day variable
+            selectedDay = info.dateStr;
+      
+            // Fetch events for the selected day
+            const response = await fetch(`/api/events?date=${selectedDay}`);
+            if (response.ok) {
+              const events = await response.json();
+              updateEventButtons(events); // Update the side panel with events
+            } else {
+              console.error('Failed to fetch events for the selected day');
+            }
+          }
     });
+
     calendar.render();
+
+    function updateEventButtons(events) {
+        eventButtonsEl.innerHTML = ''; 
+        if (events.length === 0) {
+          eventButtonsEl.innerHTML = '<p>No events for this day</p>';
+          return;
+        }
+        events.forEach((event) => {
+          const button = document.createElement('button');
+          button.classList.add('event-button');
+          button.textContent = event.title;
+          button.addEventListener('click', () => openEventDetails(event.id));
+          eventButtonsEl.appendChild(button);
+        });
+      }
   });
 
   window.addEventListener("load", function() {

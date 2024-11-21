@@ -216,8 +216,25 @@ app.get("/api/events", async function(req, res) {
             return res.status(200).redirect('/Login');
         }
 
+        // Get the current date if given
+        const { date } = req.query;
+
+        let query = { createdBy: SessionUser._id };
+
+         // If a specific date is provided, filter events for that day
+        if (date) {
+            // Parse the date to get the start and end of the day
+            const startOfDay = new Date(date);
+            const endOfDay = new Date(startOfDay);
+            endOfDay.setDate(endOfDay.getDate() + 1);
+            console.log("Start of Day:", startOfDay);
+            console.log("End of Day:", endOfDay);
+
+            query.date = { $gte: startOfDay, $lt: endOfDay };
+        }
+
         // Find events for the logged-in user
-        SessionUserEvents = await Event.find({ createdBy: SessionUser._id }).exec();
+        SessionUserEvents = await Event.find(query).exec();
 
         // Map the events to the required format for FullCalendar
         const calendarEvents = SessionUserEvents.map(event => ({
