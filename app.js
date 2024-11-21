@@ -3,8 +3,23 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
-const User=require("./public/Script/models/User");
-const Event=require("./public/Script/models/Event");
+
+// Check if the environment is for testing
+const isTestEnv = process.env.NODE_ENV === 'test';
+console.log(isTestEnv);
+
+// Conditionally load the User model based on environment
+let Event;
+let User;
+if (isTestEnv) {
+  // Use the mock user model for testing
+  User = require("./tests/mocks/UserModelMock.js");
+} else {
+  // Use the actual user model for production
+  User = require("./public/Script/models/User");
+  Event=require("./public/Script/models/Event");
+}
+// const User=require("./public/Script/models/User");
 const path = require("path");
 
 app.use(express.urlencoded({ extended: true }));
@@ -156,6 +171,14 @@ app.post("/CreateAccount", async function(req, res){
         console.log('Account created successfully!', CurrentUser._id);
         res.status(200).redirect('/Login');
     } catch (error) {
+        if (error.name === "ValidationError") {
+            const missingFields = Object.keys(error.errors).map(field => field);
+            console.log("Missing required fields:", missingFields);
+            return res.status(400).json({
+                error: "Missing required fields",
+                fields: missingFields
+            });
+        }
         // unexpected errors
         console.error('Internal server error: ', error);
         res.status(500).json({ error: "Internal server error" });
@@ -212,11 +235,14 @@ app.get("/api/events", async function(req, res) {
     }
 });
 
+module.exports = app;
 
-
-const PORT = 8080;
-// const HOST = '192.168.1.104'; //Server IP 192.168.1.104:8080
-const HOST = '127.0.0.1'; //Local IP 127.0.0.1:8080
-app.listen(PORT, HOST, () => {
-    console.log(`Server is running on http://${HOST}:${PORT}`);
-  });
+if(!isTestEnv)
+{
+    const PORT = 8080;
+    // const HOST = '192.168.1.104'; //Server IP 192.168.1.104:8080
+    const HOST = '127.0.0.1'; //Local IP 127.0.0.1:8080
+    app.listen(PORT, HOST, () => {
+        console.log(`Server is running on http://${HOST}:${PORT}`);
+      });
+}
