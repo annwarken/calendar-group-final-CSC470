@@ -33,7 +33,7 @@ const UserSchema=new mongoose.Schema({
         type:String,
         required:true
     }
-})
+});
 
 // this code is from https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1
 UserSchema.pre('save', function (next) {
@@ -63,5 +63,4 @@ UserSchema.methods.comparePassword = function(candidatePassword) {
   });
 };
 
-const User = new mongoose.model("User", UserSchema)
-module.exports = User;
+module.exports = mongoose.models.User || mongoose.model("User", UserSchema);

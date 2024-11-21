@@ -10,7 +10,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Calendar App</title>
-    <link rel="stylesheet" href="../public/stylesheets/Main.css">
     <!-- FullCalendar Links -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />
@@ -18,9 +17,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <link rel="stylesheet" href="../stylesheets/Main.css">
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script src="../Script/Main.js"></script>
 </head>
 <body>
 <header>
+    <button type="button" id="logout">Logout</button>
     <h1>Welcome, User</h1>
 </header>
 <main>
@@ -49,28 +52,6 @@
         <input type="button" class="btn w-100" id="add-task" value="+">
     </div>
 </div>
-
-<!-- FullCalendar Script -->
-<script>
-    $(document).ready(function() {
-    $('#calendar').fullCalendar({
-        fixedWeekCount: true,
-    });
-    });
-
-    // To-Do List Logic
-    $('#add-task').on('click', (evt) => {
-        const todoInput = document.getElementById('newTodoInput');
-        const todoListEl = document.getElementById('todoList');
-        if (todoInput.value.trim() !== '') {
-            const li = document.createElement('li');
-            li.textContent = todoInput.value;
-            todoListEl.appendChild(li);
-            todoInput.value = '';
-        }
-    });
-</script>
 </main>
-<script src="TaskDetails.js"></script>
 </body>
 </html>

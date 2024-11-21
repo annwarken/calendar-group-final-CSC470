@@ -4,7 +4,7 @@
   "description": "��#\u0000 \u0000g\u0000r\u0000o\u0000u\u0000p\u0000-\u0000p\u0000r\u0000o\u0000j\u0000e\u0000c\u0000t\u0000s\u0000-\u0000g\u0000r\u0000o\u0000u\u0000p\u0000-\u00007\u0000\r\u0000 \u0000",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "set NODE_ENV=test&& jest --runInBand"
   },
   "keywords": [],
   "author": "",
@@ -16,8 +16,19 @@
     "express": "^4.21.1",
     "fullcalendar": "^6.1.15",
     "mongodb": "^6.10.0",
-    "mongoose": "^8.8.0",
     "passport": "^0.7.0",
     "sortablejs": "^1.15.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-node": "^29.7.0",
+    "jest-fetch-mock": "^3.0.3",
+    "mongodb-memory-server": "^10.1.2",
+    "mongoose": "^8.8.2",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setUpTests.js"]
   }
 }
