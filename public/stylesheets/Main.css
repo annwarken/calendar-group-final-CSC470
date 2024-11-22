@@ -58,11 +58,15 @@ main {
 
 /* styles for calendar */
 .middle {
+    cursor: pointer !important;
     width: 840px;
     padding: 10px;
     border: 1px solid black;
     background-color: white;
 }
+.selected-day {
+    background-color: rgb(181, 211, 235) !important;
+  }
 
 /* styles for to-do list */
 .right {
