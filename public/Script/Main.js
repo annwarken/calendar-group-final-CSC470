@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedDay = info.dateStr;
       
             // Fetch events for the selected day
-            const response = await fetch(`/api/events?date=${selectedDay}`);
+            const response = await fetch(`/api/events?startDate=${selectedDay}`);
             if (response.ok) {
               const events = await response.json();
               updateEventButtons(events); // Update the side panel with events

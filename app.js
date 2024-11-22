@@ -217,20 +217,23 @@ app.get("/api/events", async function(req, res) {
         }
 
         // Get the current date if given
-        const { date } = req.query;
+        const { startDate } = req.query;
 
         let query = { createdBy: SessionUser._id };
 
-         // If a specific date is provided, filter events for that day
-        if (date) {
+        if (startDate) {
             // Parse the date to get the start and end of the day
-            const startOfDay = new Date(date);
-            const endOfDay = new Date(startOfDay);
-            endOfDay.setDate(endOfDay.getDate() + 1);
+            const startOfDay = new Date(startDate);
+            const endOfDay = new Date(startOfDay); 
+            endOfDay.setDate(startOfDay.getDate() + 1); 
+        
             console.log("Start of Day:", startOfDay);
             console.log("End of Day:", endOfDay);
-
-            query.date = { $gte: startOfDay, $lt: endOfDay };
+        
+            query.$and = [
+                { startDate: { $lt: endOfDay } },  // Events starting before or on this day
+                { endDate: { $gte: startOfDay } }  // Events ending on or after this day
+            ];        
         }
 
         // Find events for the logged-in user
@@ -238,10 +241,11 @@ app.get("/api/events", async function(req, res) {
 
         // Map the events to the required format for FullCalendar
         const calendarEvents = SessionUserEvents.map(event => ({
-            title: event.title,        // Event title
-            start: event.date,         // Event start time
+            title: event.title,             // Event title
+            start: event.startDate,         // Event start time
+            end: event.endDate,             // Event end time
             description: event.description, // Event description
-            id: event._id.toString()   // Event ID, this can be useful to update or delete events
+            id: event._id.toString()        // Event ID
         }));
 
         // Respond with the events in JSON format
