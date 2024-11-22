@@ -24,8 +24,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         },
         dateClick: async function (info) {
+            /*// Remove the highlighting from the previously selected day
+            if (selectedDay) {
+                const oldSelectedDay = document.querySelector(`[data-date="${selectedDay}"]`);
+                if (oldSelectedDay) {
+                  oldSelectedDay.classList.remove('selected-day');
+                }
+              }*/
+
             // Update the selected day variable
             selectedDay = info.dateStr;
+
+            /*// Highlight the new selected day
+            const newSelectedDay = document.querySelector(`[data-date="${selectedDay}"]`);
+            if (newSelectedDay) {
+              newSelectedDay.classList.add('selected-day');
+            }*/
       
             // Fetch events for the selected day
             const response = await fetch(`/api/events?date=${selectedDay}`);
