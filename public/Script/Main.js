@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
               console.error('Failed to fetch events for the selected day');
             }
-          }
+        }    
     });
 
     calendar.render();
@@ -86,35 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-function LoadMain() {
-    // Renders calendar  
-    // GetEvent(currentEvent.ID) - displays details on page 
-    // GetTask(currentTask.ID) - displays details on page 
-}
-
-function LoadEventDetails() {
-    // Loads the Event Details page // using global currentEvent variable 
-    // If not an empty event fill in info 
-    // Else if empty leave blank 
-    // Disable background while page is open  
-}
-
-function getEvent(id) {
-    // Database call to get event details 
-    // Return event with filled details 
-}
-
-function LoadTaskDetails() {
-    // Loads the Task Details page // using global currentTask variable 
-    // If not an empty task fill in info 
-    // Else if empty leave blank 
-    // Disable background while page is open  
-}
-
-function getTask(id) {
-    // Database call to get task details 
-    // Return task with filled details 
-}
 
 // Buttons ///////////////////////////////
 

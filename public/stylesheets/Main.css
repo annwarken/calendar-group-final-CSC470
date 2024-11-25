@@ -16,6 +16,7 @@ header h1 {
 header button {
     float: right;
     margin: 5px;
+    cursor: pointer;
 }
 
 /* styles for main */
@@ -52,21 +53,41 @@ main {
     border-color: black;
     border-width: 1.5px;
     border-radius: 50%;
+    cursor: pointer;
     margin: 20px;
     padding: 0;
 }
 
 /* styles for calendar */
 .middle {
-    cursor: pointer !important;
     width: 840px;
     padding: 10px;
     border: 1px solid black;
     background-color: white;
 }
+.fc-today-button, .fc-prev-button, .fc-next-button {
+    cursor: pointer;
+}
+.fc-daygrid-day {
+    cursor: pointer;
+    width: 86px;  
+    height: 86px; /* Fixed height for each day cell */
+}
+.fc-day-today {
+    font-weight: bold;
+    text-decoration: underline;
+    background-color: rgb(246, 246, 246) !important;
+    box-shadow: 0 0 10px 1px rgba(206, 206, 206, 0.75);
+
+}
 .selected-day {
-    background-color: rgb(181, 211, 235) !important;
-  }
+    background-color: rgb(222, 236, 247) !important;
+}
+.fc-event {
+    color: black;
+}
+
+  
 
 /* styles for to-do list */
 .right {
@@ -78,4 +99,5 @@ main {
 #todoList {
     list-style-type: none;
     text-align: left;
+    cursor: pointer;
 }
