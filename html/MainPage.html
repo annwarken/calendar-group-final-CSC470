@@ -28,7 +28,7 @@
         <ul id="eventList">
             <!-- Events for the selected day will be displayed here -->
         </ul>
-        <input type="button" class="btn w-100" id="add-event" value="+">
+        <input type="button" class="btn w-100" id="add-event" value="+" onclick="openCreateEvent()">
     </div>
 
     <!-- Middle: FullCalendar Monthly View -->
@@ -44,6 +44,31 @@
         </ul>
         <input type="text" id="newTodoInput" placeholder="Add a new task">
         <input type="button" class="btn w-100" id="add-task" value="+">
+    </div>
+</div>
+<!-- Modal container -->
+<div id="eventModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle"></h2> <!-- Dynamic title -->
+        <form id="eventForm">
+            <input type="hidden" id="eventId" />
+            
+            <label for="title">Title:</label>
+            <input type="text" id="title" required />
+            
+            <label for="date">Start Date:</label>
+            <input type="date" id="startDate" required />
+
+            <label for="date">End Date:</label>
+            <input type="date" id="endDate" required />
+
+            <label for="description">Description:</label>
+            <textarea id="description"></textarea>
+            
+            <button type="button" id="saveButton" onclick="saveEvent()">Save</button>
+            <button type="button" id="editButton" onclick="updateEditMode(true)">Edit</button>
+        </form>
     </div>
 </div>
 </main>

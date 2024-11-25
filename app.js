@@ -205,6 +205,35 @@ app.get("/Calendar", async function(req, res) {
     res.end();
 });
 
+app.get("/api/event/details", async function(req, res){
+    try{
+        //check if user has logged in
+        isAuth = await AuthenticateUser(req, res);
+        if(isAuth) {
+            console.log("User authenticated successfully");
+        }
+        else {
+            console.log("Failed to authenticate user");
+            return res.status(200).redirect('/Login');
+        }
+
+        // get eventId
+        const { eventId } = req.query;
+        console.log("Fetching event details for:", eventId);
+
+        let query = { _id: eventId };
+
+        eventDetails = await Event.findOne(query).exec();
+        console.log("Event title: ", eventDetails.title);
+        res.status(200).json(eventDetails);    
+    }
+    catch(error)
+    {
+        console.error('Error fetching event details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 app.get("/api/events", async function(req, res) {
     try {
         //check if user has logged in

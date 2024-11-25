@@ -1,4 +1,5 @@
 let selectedDay = null;
+let isEventEditModeEnabled = false;
 //store current date with proper dateStr format
 let today = new Date();
 let currentDay = today.getFullYear() + '-' + 
@@ -83,6 +84,94 @@ document.addEventListener('DOMContentLoaded', async function() {
       }
 });
 
+
+// Event Details Functionality
+
+// Open modal for creating a new event
+function openCreateEvent()
+{
+    document.getElementById('modalTitle').textContent = 'Create New Event';
+    document.getElementById('eventForm').reset(); // Clear form
+    document.getElementById('startDate').value = selectedDay;
+    document.getElementById('endDate').value = selectedDay;
+    updateEditMode(true);
+    document.getElementById('eventModal').style.display = 'block';
+}
+
+function openEventDetails(eventId) {
+    fetch(`/api/event/details?eventId=${eventId}`)
+    .then(response => {
+        if (!response.ok) {
+        throw new Error('Failed to fetch event details');
+        }
+        return response.json();
+    })
+    .then(eventData => {
+        console.log("Opening event details for:", eventData);
+        document.getElementById('modalTitle').textContent = 'Event Details';
+        document.getElementById('eventId').value = eventData.id;
+        document.getElementById('title').value = eventData.title;
+        document.getElementById('description').value = eventData.description;
+        const startDate = new Date(eventData.startDate);
+        const endDate = new Date(eventData.endDate);
+        document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
+        document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
+        
+        updateEditMode(false);
+        document.getElementById('eventModal').style.display = 'block';
+    })
+    .catch(error => {
+        console.error('Error loading event details:', error);
+    });
+}
+
+// Enable editing of event details
+function updateEditMode(editable) {
+    isEventEditModeEnabled = editable;
+    setMode();
+
+    if(isEventEditModeEnabled)
+    {
+        document.getElementById('saveButton').style.display = 'block';
+        document.getElementById('editButton').style.display = 'none';  
+    }
+    else
+    {
+        document.getElementById('saveButton').style.display = 'none';
+        document.getElementById('editButton').style.display = 'block';
+    }
+    console.log("Event edit mode:", isEventEditModeEnabled);
+}
+  
+// Helper function to toggle read-only state
+function setMode() {
+    document.getElementById('title').readOnly = !isEventEditModeEnabled;
+    document.getElementById('description').readOnly = !isEventEditModeEnabled;
+    document.getElementById('startDate').disabled = !isEventEditModeEnabled;
+    document.getElementById('endDate').disabled = !isEventEditModeEnabled;
+}
+
+async function saveEvent()
+{
+    console.log("Needs to be implemented");
+    closeModal();
+}
+
+function closeModal() {
+    isEventEditModeEnabled = false;
+    const modal = document.getElementById('eventModal');
+    modal.style.display = 'none';  // Hide the modal
+}
+
+// Close modal if the background is clicked
+window.onclick = function(event) {
+    const modal = document.getElementById('eventModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+  
+// Logout Functionality
 window.addEventListener("load", function() {
   let logoutButton = document.querySelector("#logout");
 
