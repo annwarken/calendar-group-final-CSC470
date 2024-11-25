@@ -1,6 +1,11 @@
 let selectedDay = null;
+//store current date with proper dateStr format
+let today = new Date();
+let currentDay = today.getFullYear() + '-' + 
+            String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+            String(today.getDate()).padStart(2, '0');
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     var calendarEl = document.getElementById('calendar');
     var eventButtonsEl = document.getElementById('eventList');
     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -24,35 +29,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         },
         dateClick: async function (info) {
-            // Remove the highlighting from the previously selected day
-            if (selectedDay) {
-                const oldSelectedDay = document.querySelector(`[data-date="${selectedDay}"]`);
-                if (oldSelectedDay) {
-                  oldSelectedDay.classList.remove('selected-day');
-                }
-              }
-
-            // Update the selected day variable
-            selectedDay = info.dateStr;
-
-            // Highlight the new selected day
-            const newSelectedDay = document.querySelector(`[data-date="${selectedDay}"]`);
-            if (newSelectedDay) {
-              newSelectedDay.classList.add('selected-day');
-            }
-      
-            // Fetch events for the selected day
-            const response = await fetch(`/api/events?startDate=${selectedDay}`);
-            if (response.ok) {
-              const events = await response.json();
-              updateEventButtons(events); // Update the side panel with events
-            } else {
-              console.error('Failed to fetch events for the selected day');
-            }
+            //update events/tasks when clicking date
+            updateDayClick(info.dateStr);
         }    
     });
 
     calendar.render();
+
+    //update the events/tasks when page first loads
+    await updateDayClick(currentDay);
+
+    async function updateDayClick(date) {
+      // Remove the highlighting from the previously selected day
+      if (selectedDay) {
+        const oldSelectedDay = document.querySelector(`[data-date="${selectedDay}"]`);
+        if (oldSelectedDay) {
+          oldSelectedDay.classList.remove('selected-day');
+        }
+      }
+
+      // Update the selected day variable
+      selectedDay = date;
+
+      // Highlight the new selected day
+      const newSelectedDay = document.querySelector(`[data-date="${selectedDay}"]`);
+      if (newSelectedDay) {
+        newSelectedDay.classList.add('selected-day');
+      }
+
+      // Fetch events for the selected day
+      const response = await fetch(`/api/events?startDate=${selectedDay}`);
+      if (response.ok) {
+        const events = await response.json();
+        updateEventButtons(events); // Update the side panel with events
+      } else {
+        console.error('Failed to fetch events for the selected day');
+      }
+    }
 
     function updateEventButtons(events) {
         eventButtonsEl.innerHTML = ''; 
@@ -68,16 +81,16 @@ document.addEventListener('DOMContentLoaded', function() {
           eventButtonsEl.appendChild(button);
         });
       }
+});
+
+window.addEventListener("load", function() {
+  let logoutButton = document.querySelector("#logout");
+
+  //clears cookies and returns user to login page
+  logoutButton.addEventListener("click", function() {
+      console.log("/Logout");
+      window.location.href = "/Logout";
   });
-
-  window.addEventListener("load", function() {
-    let logoutButton = document.querySelector("#logout");
-
-    //clears cookies and returns user to login page
-    logoutButton.addEventListener("click", function() {
-        console.log("/Logout");
-        window.location.href = "/Logout";
-    });
 });
 
 

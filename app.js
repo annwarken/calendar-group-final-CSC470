@@ -77,6 +77,7 @@ async function AuthenticateUser(req, res) {
         }
         else {
             console.log("Authenticated User: ", user._id);
+            SessionUser = user;
             return true;
         }
     } catch (error) {
