@@ -286,6 +286,98 @@ app.get("/api/events", async function(req, res) {
     }
 });
 
+app.get("/api/task/details", async function(req, res) {
+    try {
+        //check if user has logged in
+        isAuth = await AuthenticateUser(req, res);
+        if(isAuth) {
+            console.log("User authenticated successfully");
+        }
+        else {
+            console.log("Failed to authenticate user");
+            return res.status(200).redirect('/Login');
+        }
+
+        // Get the id of selected task
+        const { id } = req.query;
+
+        let query = { _id: id };
+
+        // Find tasks for the logged-in user
+        taskDetails = await Task.findOne(query).exec();
+
+        // Respond with the task details in JSON format
+        res.status(200).json(taskDetails);
+    } catch (error) {
+        console.error('Error fetching task details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+app.get("/api/tasks", async function(req, res) {
+    try {
+        //check if user has logged in
+        isAuth = await AuthenticateUser(req, res);
+        if(isAuth) {
+            console.log("User authenticated successfully");
+        }
+        else {
+            console.log("Failed to authenticate user");
+            return res.status(200).redirect('/Login');
+        }
+
+        // Get the selected date
+        const { date } = req.query;
+
+        let query = { createdBy: SessionUser._id };
+
+        // Find tasks for the logged-in user
+        tasks = await Task.find(query).exec();
+
+        // Respond with the tasks in JSON format
+        res.status(200).json(tasks);
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.put("/api/task/complete", async function(req, res){
+    try
+    {
+        //check if user has logged in
+        isAuth = await AuthenticateUser(req, res);
+        if(isAuth) {
+            console.log("User authenticated successfully");
+        }
+        else {
+            console.log("Failed to authenticate user");
+            return res.status(200).redirect('/Login');
+        }
+
+        // get the task id and status
+        const { id, isComplete } = req.query;
+
+        let updatedTask = Task.findByIdAndUpdate(id, { isComplete: isComplete }, {new: true})
+
+        // check if the task was updated
+        if (!updatedTask)
+        {
+            console.error('Task not found');
+            res.status(500).json({ message: 'Internal server error' });
+        }
+        else {
+            console.log('Updated Task:', updatedTask);
+            res.status(200).json(updatedTask);
+        }
+    } catch (error)
+    {
+        console.error('Error updating task status:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 module.exports = app;
 
 if(!isTestEnv)
