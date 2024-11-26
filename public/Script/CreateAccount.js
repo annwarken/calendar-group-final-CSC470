@@ -36,3 +36,8 @@ document.getElementById("createAccountForm").addEventListener("submit", async fu
         errorMessage.style.display = "block";
     }
 });
+
+function goBack()
+{
+    history.back();
+}
