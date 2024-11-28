@@ -1,5 +1,6 @@
 let selectedDay = null;
 let isEventEditModeEnabled = false;
+let isTaskEditModeEnabled = false;
 //store current date with proper dateStr format
 let today = new Date();
 let currentDay = today.getFullYear() + '-' + 
@@ -85,16 +86,16 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 
-// Event Details Functionality
+// Event Details Functionality //////////////////////////////////////////////////
 
 // Open modal for creating a new event
 function openCreateEvent()
 {
     document.getElementById('modalTitle').textContent = 'Create New Event';
     document.getElementById('eventForm').reset(); // Clear form
-    document.getElementById('startDate').value = selectedDay;
-    document.getElementById('endDate').value = selectedDay;
-    updateEditMode(true);
+    document.getElementById('event-start-date').value = selectedDay;
+    document.getElementById('event-end-date').value = selectedDay;
+    updateEventEditMode(true);
     document.getElementById('eventModal').style.display = 'block';
 }
 
@@ -110,14 +111,14 @@ function openEventDetails(eventId) {
         console.log("Opening event details for:", eventData);
         document.getElementById('modalTitle').textContent = 'Event Details';
         document.getElementById('eventId').value = eventData.id;
-        document.getElementById('title').value = eventData.title;
-        document.getElementById('description').value = eventData.description;
+        document.getElementById('event-title').value = eventData.title;
+        document.getElementById('event-description').value = eventData.description;
         const startDate = new Date(eventData.startDate);
         const endDate = new Date(eventData.endDate);
-        document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
-        document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
-        
-        updateEditMode(false);
+        document.getElementById('event-start-date').value = startDate.toISOString().split('T')[0];
+        document.getElementById('event-end-date').value = endDate.toISOString().split('T')[0];
+
+        updateEventEditMode(false);
         document.getElementById('eventModal').style.display = 'block';
     })
     .catch(error => {
@@ -126,38 +127,44 @@ function openEventDetails(eventId) {
 }
 
 // Enable editing of event details
-function updateEditMode(editable) {
+function updateEventEditMode(editable) {
     isEventEditModeEnabled = editable;
-    setMode();
+    setEventMode();
 
     if(isEventEditModeEnabled)
     {
-        document.getElementById('saveButton').style.display = 'block';
-        document.getElementById('editButton').style.display = 'none';  
+        document.getElementById('save-event').style.display = 'block';
+        document.getElementById('edit-event').style.display = 'none';  
     }
     else
     {
-        document.getElementById('saveButton').style.display = 'none';
-        document.getElementById('editButton').style.display = 'block';
+        document.getElementById('save-event').style.display = 'none';
+        document.getElementById('edit-event').style.display = 'block';
     }
     console.log("Event edit mode:", isEventEditModeEnabled);
 }
   
 // Helper function to toggle read-only state
-function setMode() {
-    document.getElementById('title').readOnly = !isEventEditModeEnabled;
-    document.getElementById('description').readOnly = !isEventEditModeEnabled;
-    document.getElementById('startDate').disabled = !isEventEditModeEnabled;
-    document.getElementById('endDate').disabled = !isEventEditModeEnabled;
+function setEventMode() {
+    document.getElementById('event-title').readOnly = !isEventEditModeEnabled;
+    document.getElementById('event-description').readOnly = !isEventEditModeEnabled;
+    document.getElementById('event-start-date').disabled = !isEventEditModeEnabled;
+    document.getElementById('event-end-date').disabled = !isEventEditModeEnabled;
 }
 
 async function saveEvent()
 {
     console.log("Needs to be implemented");
-    closeModal();
+    closeEventModal();
 }
 
-function closeModal() {
+async function deleteEvent()
+{
+    console.log("Needs to be implemented");
+    closeEventModal();
+}
+
+function closeEventModal() {
     isEventEditModeEnabled = false;
     const modal = document.getElementById('eventModal');
     modal.style.display = 'none';  // Hide the modal
@@ -170,8 +177,99 @@ window.onclick = function(event) {
         modal.style.display = 'none';
     }
 }
+
+
+// Task Details Functionality ////////////////////////////////////////////////////
+
+// Open modal for creating a new task
+function openTaskModal()
+{
+    document.getElementById('modalTitle').textContent = 'Create New Task';
+    document.getElementById('taskForm').reset(); // Clear form
+    document.getElementById('task-date').value = selectedDay;
+    updateTaskEditMode(true);
+    document.getElementById('taskModal').style.display = 'block';
+}
+
+function openTaskDetails(taskId) {
+    fetch(`/api/task/details?taskId=${taskId}`)
+    .then(response => {
+        if (!response.ok) {
+        throw new Error('Failed to fetch task details');
+        }
+        return response.json();
+    })
+    .then(taskData => {
+        console.log("Opening task details for:", taskData);
+        document.getElementById('modalTitle').textContent = 'Task Details';
+        document.getElementById('taskId').value = taskData.id;
+        document.getElementById('task-title').value = taskData.title;
+        document.getElementById('task-description').value = taskData.description;
+        const Date = new Date(taskData.Date);
+        document.getElementById('task-date').value = Date.toISOString().split('T')[0];
+        
+        updateTaskEditMode(false);
+        document.getElementById('taskModal').style.display = 'block';
+    })
+    .catch(error => {
+        console.error('Error loading task details:', error);
+    });
+}
+
+// Enable editing of event details
+function updateTaskEditMode(editable) {
+    isTaskEditModeEnabled = editable;
+    setTaskMode();
+
+    if(isTaskEditModeEnabled)
+    {
+        document.getElementById('save-task').style.display = 'block';
+        document.getElementById('edit-task').style.display = 'none';  
+    }
+    else
+    {
+        document.getElementById('save-task').style.display = 'none';
+        document.getElementById('edit-task').style.display = 'block';
+    }
+    console.log("Task edit mode:", isTaskEditModeEnabled);
+}
   
-// Logout Functionality
+// Helper function to toggle read-only state
+function setTaskMode() {
+    document.getElementById('task-title').readOnly = !isTaskEditModeEnabled;
+    document.getElementById('task-description').readOnly = !isTaskEditModeEnabled;
+    document.getElementById('task-date').disabled = !isTaskEditModeEnabled;
+}
+
+async function saveTask()
+{
+    console.log("Needs to be implemented");
+    closeTaskModal();
+}
+
+async function deleteTask()
+{
+    console.log("Needs to be implemented");
+    closeTaskModal();
+}
+
+function closeTaskModal() {
+    isTaskEditModeEnabled = false;
+    const modal = document.getElementById('taskModal');
+    modal.style.display = 'none';  // Hide the modal
+}
+
+// Close modal if the background is clicked
+window.onclick = function(task) {
+    const modal = document.getElementById('taskModal');
+    if (task.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+
+  
+// Logout Functionality //////////////////////////////////////////////////////////////
+
 window.addEventListener("load", function() {
   let logoutButton = document.querySelector("#logout");
 
@@ -180,38 +278,4 @@ window.addEventListener("load", function() {
       console.log("/Logout");
       window.location.href = "/Logout";
   });
-});
-
-
-
-
-
-
-
-
-// Buttons ///////////////////////////////
-
-$('#select-day').on('click', () => {
-    // currentDay = day selected  
-    // Calls LoadMain() 
-});
-
-$('#edit-event').on('click', () => {
-    // CurrentEvent = getEvent(ID) //id of event clicked 
-    // LoadEventDetails() 
-});
-
-$('#add-event').on('click', () => {
-    // CurrentEvent = new empty event  
-    // LoadEventDetails() 
-});
-
-$('#edit-task').on('click', () => {
-    // CurrentEvent = getTask(ID) //id of task clicked 
-    // LoadTaskDetails() 
-});
-
-$('#add-task').on('click', () => {
-    // CurrentTask = new empty task  
-    // LoadTaskDetails() 
 });
