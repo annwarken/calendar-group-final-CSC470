@@ -10,6 +10,7 @@ console.log(isTestEnv);
 
 // Conditionally load the User model based on environment
 let Event;
+let Task;
 let User;
 if (isTestEnv) {
   // Use the mock user model for testing
@@ -18,6 +19,7 @@ if (isTestEnv) {
   // Use the actual user model for production
   User = require("./public/Script/models/User");
   Event=require("./public/Script/models/Event");
+  Task = require("./public/Script/models/Task");
 }
 // const User=require("./public/Script/models/User");
 const path = require("path");
@@ -31,6 +33,7 @@ app.use("/Script", express.static(path.join(__dirname, "Script")));
 // Current Session Variables
 let SessionUser = null;
 let SessionUserEvents = null;
+let SessionUserTasks = null;
 let isVerified = false;
 let isAuth = false;
 
@@ -205,6 +208,7 @@ app.get("/Calendar", async function(req, res) {
     res.end();
 });
 
+// API fucntions
 app.get("/api/event/details", async function(req, res){
     try{
         //check if user has logged in
@@ -314,7 +318,6 @@ app.get("/api/task/details", async function(req, res) {
     }
 });
 
-
 app.get("/api/tasks", async function(req, res) {
     try {
         //check if user has logged in
@@ -330,13 +333,13 @@ app.get("/api/tasks", async function(req, res) {
         // Get the selected date
         const { date } = req.query;
 
-        let query = { createdBy: SessionUser._id };
+        let query = { userID: SessionUser._id };
 
         // Find tasks for the logged-in user
-        tasks = await Task.find(query).exec();
+        SessionUserTasks = await Task.find(query).exec();
 
         // Respond with the tasks in JSON format
-        res.status(200).json(tasks);
+        res.status(200).json(SessionUserTasks);
     } catch (error) {
         console.error('Error fetching tasks:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -359,7 +362,7 @@ app.put("/api/task/complete", async function(req, res){
         // get the task id and status
         const { id, isComplete } = req.query;
 
-        let updatedTask = Task.findByIdAndUpdate(id, { isComplete: isComplete }, {new: true})
+        let updatedTask = await Task.findByIdAndUpdate(id, { isComplete: isComplete }, {new: true})
 
         // check if the task was updated
         if (!updatedTask)

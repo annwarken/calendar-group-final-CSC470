@@ -10,6 +10,7 @@ let currentDay = today.getFullYear() + '-' +
 document.addEventListener('DOMContentLoaded', async function() {
     var calendarEl = document.getElementById('calendar');
     var eventButtonsEl = document.getElementById('eventList');
+    var taskButtonsEl = document.getElementById('todoList');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         events: function(fetchInfo) {
@@ -60,15 +61,39 @@ document.addEventListener('DOMContentLoaded', async function() {
       }
 
       // Fetch events for the selected day
-      const response = await fetch(`/api/events?startDate=${selectedDay}`);
-      if (response.ok) {
-        const events = await response.json();
+      const eventResponse = await fetch(`/api/events?startDate=${selectedDay}`);
+      if (eventResponse.ok) {
+        const events = await eventResponse.json();
         updateEventButtons(events); // Update the side panel with events
       } else {
         console.error('Failed to fetch events for the selected day');
       }
+
+      // Ftech tasks for the selected day
+      const taskResponse = await fetch(`/api/tasks?date=${selectedDay}`);
+      if (taskResponse.ok) {
+        const tasks = await taskResponse.json();
+        console.log(tasks);
+        updateTaskButtons(tasks); // Update the side panel with tasks
+      } else {
+        console.error('Failed to fetch tasks for the selected day');
+      }
     }
 
+    function updateTaskButtons(tasks) {
+        taskButtonsEl.innerHTML = ''; 
+        if (tasks.length === 0) {
+          taskButtonsEl.innerHTML = '<p>No tasks for this day</p>';
+          return;
+        }
+        tasks.forEach((task) => {
+          const button = document.createElement('button');
+          button.classList.add('event-button');
+          button.textContent = task.title;
+          button.addEventListener('click', () => openTaskDetails(task.id));
+          taskButtonsEl.appendChild(button);
+        });
+    }
     function updateEventButtons(events) {
         eventButtonsEl.innerHTML = ''; 
         if (events.length === 0) {
