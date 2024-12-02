@@ -291,7 +291,7 @@ app.get("/api/events", async function(req, res) {
 });
 
 app.get("/api/task/details", async function(req, res) {
-    try {
+    try{
         //check if user has logged in
         isAuth = await AuthenticateUser(req, res);
         if(isAuth) {
@@ -302,18 +302,19 @@ app.get("/api/task/details", async function(req, res) {
             return res.status(200).redirect('/Login');
         }
 
-        // Get the id of selected task
-        const { id } = req.query;
+        // get taskId
+        const { taskId } = req.query;
+        console.log("Fetching task details for:", taskId);
 
-        let query = { _id: id };
+        let query = { _id: taskId };
 
-        // Find tasks for the logged-in user
         taskDetails = await Task.findOne(query).exec();
-
-        // Respond with the task details in JSON format
-        res.status(200).json(taskDetails);
-    } catch (error) {
-        console.error('Error fetching task details:', error);
+        console.log("Task title: ", taskDetails.title);
+        res.status(200).json(taskDetails);    
+    }
+    catch(error)
+    {
+        console.error('Error fetching event details:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });

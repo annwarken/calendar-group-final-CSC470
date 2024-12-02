@@ -90,7 +90,8 @@ document.addEventListener('DOMContentLoaded', async function() {
           const button = document.createElement('button');
           button.classList.add('event-button');
           button.textContent = task.title;
-          button.addEventListener('click', () => openTaskDetails(task.id));
+          button.addEventListener('click', () => openTaskDetails(task._id));
+          console.log("Printint task button:", task._id);
           taskButtonsEl.appendChild(button);
         });
     }
@@ -227,11 +228,11 @@ function openTaskDetails(taskId) {
     .then(taskData => {
         console.log("Opening task details for:", taskData);
         document.getElementById('modalTitle').textContent = 'Task Details';
-        document.getElementById('taskId').value = taskData.id;
+        document.getElementById('taskId').value = taskData._id;
         document.getElementById('task-title').value = taskData.title;
         document.getElementById('task-description').value = taskData.description;
-        const Date = new Date(taskData.Date);
-        document.getElementById('task-date').value = Date.toISOString().split('T')[0];
+        const date = new Date(taskData.date);
+        document.getElementById('task-date').value = date.toISOString().split('T')[0];
         
         updateTaskEditMode(false);
         document.getElementById('taskModal').style.display = 'block';
