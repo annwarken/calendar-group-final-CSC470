@@ -208,7 +208,7 @@ window.onclick = function(event) {
 // Task Details Functionality ////////////////////////////////////////////////////
 
 // Open modal for creating a new task
-function openTaskModal()
+function openCreateTask()
 {
     document.getElementById('modalTitle').textContent = 'Create New Task';
     document.getElementById('taskForm').reset(); // Clear form
