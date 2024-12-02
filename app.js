@@ -330,10 +330,25 @@ app.get("/api/tasks", async function(req, res) {
             return res.status(200).redirect('/Login');
         }
 
-        // Get the selected date
-        const { date } = req.query;
+        let query = {userID: SessionUser._id}
 
-        let query = { userID: SessionUser._id };
+        // Get the selected date
+        let { date } = req.query;
+        if (date) {
+            const startOfDay = new Date(date);
+            const endOfDay = new Date(startOfDay); 
+            endOfDay.setDate(startOfDay.getDate() + 1); 
+
+            console.log("Start of Day:", startOfDay);
+            console.log("End of Day:", endOfDay);
+                    
+            query.$and = [
+                { date: { $lt: endOfDay } },  // Events starting before or on this day
+                { date: { $gte: startOfDay } }  // Events ending on or after this day
+            ];   
+        }
+
+        console.log(query);
 
         // Find tasks for the logged-in user
         SessionUserTasks = await Task.find(query).exec();
