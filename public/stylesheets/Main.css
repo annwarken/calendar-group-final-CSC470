@@ -60,20 +60,20 @@ main {
     padding: 0;
 }
 .event-button {
-  padding: 10px;
-  margin-bottom: 5px;
-  width: 100%;
-  border: none;
-  background-color: rgb(29, 46, 61);
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  font-family: "Comic Sans MS", Comic Sans, cursive;
-  display: inline-block;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  cursor: pointer;
+    padding: 10px;
+    margin-bottom: 5px;
+    width: 100%;
+    border: none;
+    background-color: rgb(29, 46, 61);
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-family: "Comic Sans MS", Comic Sans, cursive;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    cursor: pointer;
 }
 
 /* styles for calendar */
@@ -146,5 +146,44 @@ main {
 #todoList {
     list-style-type: none;
     text-align: left;
+    margin: 16px;
+    padding: 0;
+}
+.task-item {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    background-color: rgb(29, 46, 61);
+}
+.task-checkbox {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 2px solid black;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+.task-checkbox:checked {
+    background-color: blue;
+}
+.task-button {
+    padding: 10px;
+    margin-bottom: 5px;
+    width: 75%;
+    border: none;
+    color: white;
+    background-color: rgb(29, 46, 61);
+    text-align: center;
+    text-decoration: none;
+    font-family: "Comic Sans MS", Comic Sans, cursive;
+    display: inline-block;
+    font-size: 16px;
+    border: none;
     cursor: pointer;
 }
