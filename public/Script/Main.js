@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           button.classList.add('event-button');
           button.textContent = task.title;
           button.addEventListener('click', () => openTaskDetails(task._id));
-          console.log("Printint task button:", task._id);
+          console.log("Printing task button:", task._id);
           taskButtonsEl.appendChild(button);
         });
     }
@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 // Open modal for creating a new event
 function openCreateEvent()
 {
+    closeTaskModal();
     document.getElementById('eventModalTitle').textContent = 'Create New Event';
     document.getElementById('eventForm').reset(); // Clear form
     document.getElementById('event-start-date').value = selectedDay;
@@ -126,6 +127,7 @@ function openCreateEvent()
 }
 
 function openEventDetails(eventId) {
+    closeTaskModal();
     fetch(`/api/event/details?eventId=${eventId}`)
     .then(response => {
         if (!response.ok) {
@@ -192,24 +194,16 @@ async function deleteEvent()
 
 function closeEventModal() {
     isEventEditModeEnabled = false;
-    const modal = document.getElementById('eventModal');
-    modal.style.display = 'none';  // Hide the modal
+    let eventModal = document.getElementById('eventModal');
+    eventModal.style.display = 'none';  // Hide the modal
 }
-
-// Close modal if the background is clicked
-window.onclick = function(event) {
-    const modal = document.getElementById('eventModal');
-    if (event.target == modal) {
-        modal.style.display = 'none';
-    }
-}
-
 
 // Task Details Functionality ////////////////////////////////////////////////////
 
 // Open modal for creating a new task
 function openCreateTask()
 {
+    closeEventModal();
     document.getElementById('taskModalTitle').textContent = 'Create New Task';
     document.getElementById('taskForm').reset(); // Clear form
     document.getElementById('task-date').value = selectedDay;
@@ -218,6 +212,8 @@ function openCreateTask()
 }
 
 function openTaskDetails(taskId) {
+    closeEventModal();
+
     fetch(`/api/task/details?taskId=${taskId}`)
     .then(response => {
         if (!response.ok) {
@@ -242,7 +238,7 @@ function openTaskDetails(taskId) {
     });
 }
 
-// Enable editing of event details
+// Enable editing of task details
 function updateTaskEditMode(editable) {
     isTaskEditModeEnabled = editable;
     setTaskMode();
@@ -281,19 +277,19 @@ async function deleteTask()
 
 function closeTaskModal() {
     isTaskEditModeEnabled = false;
-    const modal = document.getElementById('taskModal');
-    modal.style.display = 'none';  // Hide the modal
+    let taskModal = document.getElementById('taskModal');
+    taskModal.style.display = 'none';  // Hide the modal
 }
-
+  
 // Close modal if the background is clicked
-window.onclick = function(task) {
-    const modal = document.getElementById('taskModal');
-    if (task.target == modal) {
-        modal.style.display = 'none';
+window.onclick = function(event) {
+    if (event.target.id === 'eventModal') {
+      closeEventModal();
+    } else if (event.target.id === 'taskModal') {
+      closeTaskModal();
     }
 }
 
-  
 // Logout Functionality //////////////////////////////////////////////////////////////
 
 window.addEventListener("load", function() {

@@ -13,10 +13,6 @@
     <!-- FullCalendar Links -->
     <link rel="stylesheet" href="../stylesheets/Main.css">
     <link rel="stylesheet" href="../stylesheets/Modal.css">
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-    <script src="../Script/Main.js"></script>
-    <script src="../Script/EventDetails.js"></script>
-    <script src="../Script/TaskDetails.js"></script>
 </head>
 <body>
 <header>
@@ -49,7 +45,6 @@
     </div>
 </div>
 
-<!-- Modal containers -->
 <div id="eventModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeEventModal()">&times;</span>
@@ -58,23 +53,23 @@
             <input type="hidden" id="eventId" />
             
             <div class="item">
-                <label id="event-title" for="event-title">Title:</label>
+                <label for="event-title">Title:</label>
                 <input type="text" name="event-title" id="event-title" required />
            </div>
            <div class="item">
-            <label id="event-start-date" for="event-start-date">Start Date:</label>
+            <label for="event-start-date">Start Date:</label>
             <input type="date" name="event-start-date" id="event-start-date" required />
            </div>
            <div class="item">
-            <label id="event-end-date" for="event-end-date">End Date:</label>
+            <label for="event-end-date">End Date:</label>
             <input type="date" name="event-end-date" id="event-end-date" required />
            </div>
            <div class="item">
-            <label id="event-time" for="event-time">Time:</label>
+            <label for="event-time">Time:</label>
             <input type="time" name="event-time" id="event-time">
            </div>
            <div class="item">
-                <label id="event-description" for="event-description">Description:</label>
+                <label for="event-description">Description:</label>
                 <textarea name="event-description" id="event-description"></textarea>
             </div>
             
@@ -86,6 +81,7 @@
         </form>
     </div>
 </div>
+
 <div id="taskModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeTaskModal()">&times;</span>
@@ -94,26 +90,28 @@
             <input type="hidden" id="taskId" />
             
             <div class="item">
-                <label id="task-title" for="task-title">Title:</label>
+                <label for="task-title">Title:</label>
                 <input type="text" name="task-title" id="task-title" required />
-           </div>
-           <div class="item">
-            <label id="task-date" for="task-date">Date:</label>
+            </div>
+            <div class="item">
+            <label for="task-date">Date:</label>
             <input type="date" name="task-date" id="task-date" required />
-           </div>
-           <div class="item">
-                <label id="task-description" for="task-description">Description:</label>
+            </div>
+            <div class="item">
+                <label for="task-description">Description:</label>
                 <textarea name="task-description" id="task-description"></textarea>
             </div>
             
             <div class="buttons">
-                <button type="button" id="save-task" onclick="Task()">Save</button>
+                <button type="button" id="save-task" onclick="saveTask()">Save</button>
                 <button type="button" id="edit-task" onclick="updateTaskEditMode(true)">Edit</button>
-                <button typ="button" id="delete-task" onclick="deleteTask()">Delete</button>
-           </div>
+                <button type="button" id="delete-task" onclick="deleteTask()">Delete</button>
+            </div>
         </form>
     </div>
 </div>
 </main>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+<script src="../Script/Main.js"></script>
 </body>
 </html>
