@@ -1,0 +1,40 @@
+/* the styles for the modal */
+.modal-content {
+    border: 5px double black;
+    background-color: lightgray;
+    border-radius: 5px double;
+    text-align: center;
+    width: 400px;
+}
+
+/* styles for the modal title */
+.modal h2{
+    font-size: 30px;
+    font-family: "Comic Sans MS", Comic Sans, cursive;
+    font-weight: bold;
+}
+
+/* styles for the inputs */
+.modal #eventForm {
+    text-align: center;
+    margin: 0 75px;
+}
+.modal .item {
+    margin: 10px;
+}
+.modal label {
+    font-size: 20px;
+}
+
+/* style for buttons */
+.modal .buttons {
+    display: flex;
+    padding: 15px;
+    text-align: center;
+}
+.modal button {
+    border-width: 2px;
+    margin: 0 10px;
+    width: 60px;
+    height: 30px;
+}
