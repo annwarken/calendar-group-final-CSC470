@@ -136,7 +136,7 @@ function openEventDetails(eventId) {
     .then(eventData => {
         console.log("Opening event details for:", eventData);
         document.getElementById('modalTitle').textContent = 'Event Details';
-        document.getElementById('eventId').value = eventData.id;
+        document.getElementById('eventId').value = eventData._id;
         document.getElementById('event-title').value = eventData.title;
         document.getElementById('event-description').value = eventData.description;
         const startDate = new Date(eventData.startDate);
