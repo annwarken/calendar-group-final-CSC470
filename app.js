@@ -208,6 +208,26 @@ app.get("/Calendar", async function(req, res) {
     res.end();
 });
 
+app.get("/api/user", async function(req, res){
+    try{
+        //check if user has logged in
+        isAuth = await AuthenticateUser(req, res);
+        if(isAuth) {
+            console.log("User authenticated successfully");
+        }
+        else {
+            console.log("Failed to authenticate user");
+            return res.status(200).redirect('/Login');
+        }
+        res.status(200).json({firstname: SessionUser.firstname, lastname: SessionUser.lastname});
+    }
+    catch(error)
+    {
+        console.error('Error getting user details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 // API fucntions
 app.get("/api/event/details", async function(req, res){
     try{

@@ -7,7 +7,22 @@ let currentDay = today.getFullYear() + '-' +
             String(today.getMonth() + 1).padStart(2, '0') + '-' + 
             String(today.getDate()).padStart(2, '0');
 
+let CurrentUser = "";
+async function getUserFirstName() {
+    const userResponse = await fetch(`/api/user`);
+    if (userResponse.ok) {
+        CurrentUser = await userResponse.json();
+        console.log(CurrentUser);
+        let welcomeMessage = document.querySelector("h1");
+        welcomeMessage.textContent = `Welcome, ${CurrentUser.firstname} ${CurrentUser.lastname}`;
+    } else {
+        console.error('Failed to fetch events for the selected day');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
+    getUserFirstName();    
+
     var calendarEl = document.getElementById('calendar');
     var eventButtonsEl = document.getElementById('eventList');
     var taskButtonsEl = document.getElementById('todoList');
@@ -15,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         initialView: 'dayGridMonth',
         events: function(fetchInfo) {
             // Dynamically fetch events based on the calendar's visible range
-            return fetch('../../api/events')  // Replace with your backend's endpoint
+            return fetch('../../api/events') 
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -69,7 +84,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.error('Failed to fetch events for the selected day');
       }
 
-      // Ftech tasks for the selected day
+      // Fetch tasks for the selected day
       const taskResponse = await fetch(`/api/tasks?date=${selectedDay}`);
       if (taskResponse.ok) {
         const tasks = await taskResponse.json();
