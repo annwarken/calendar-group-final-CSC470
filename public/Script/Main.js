@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 // Open modal for creating a new event
 function openCreateEvent()
 {
-    document.getElementById('modalTitle').textContent = 'Create New Event';
+    document.getElementById('eventModalTitle').textContent = 'Create New Event';
     document.getElementById('eventForm').reset(); // Clear form
     document.getElementById('event-start-date').value = selectedDay;
     document.getElementById('event-end-date').value = selectedDay;
@@ -135,7 +135,7 @@ function openEventDetails(eventId) {
     })
     .then(eventData => {
         console.log("Opening event details for:", eventData);
-        document.getElementById('modalTitle').textContent = 'Event Details';
+        document.getElementById('eventModalTitle').textContent = 'Event Details';
         document.getElementById('eventId').value = eventData.id;
         document.getElementById('event-title').value = eventData.title;
         document.getElementById('event-description').value = eventData.description;
@@ -210,7 +210,7 @@ window.onclick = function(event) {
 // Open modal for creating a new task
 function openCreateTask()
 {
-    document.getElementById('modalTitle').textContent = 'Create New Task';
+    document.getElementById('taskModalTitle').textContent = 'Create New Task';
     document.getElementById('taskForm').reset(); // Clear form
     document.getElementById('task-date').value = selectedDay;
     updateTaskEditMode(true);
@@ -227,7 +227,7 @@ function openTaskDetails(taskId) {
     })
     .then(taskData => {
         console.log("Opening task details for:", taskData);
-        document.getElementById('modalTitle').textContent = 'Task Details';
+        document.getElementById('taskModalTitle').textContent = 'Task Details';
         document.getElementById('taskId').value = taskData._id;
         document.getElementById('task-title').value = taskData.title;
         document.getElementById('task-description').value = taskData.description;
