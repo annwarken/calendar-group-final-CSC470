@@ -112,15 +112,24 @@ document.addEventListener('DOMContentLoaded', async function() {
             taskCheckbox.classList.add('task-checkbox');
             taskCheckbox.checked = task.complete;
             //update completion in database on check
-            //taskCheckbox.addEventListener('change', () => checkTask(task._id, task.complete));
+            taskCheckbox.addEventListener('change', () => {
+                //strikethrough text when box is clicked
+                if (taskCheckbox.checked) {
+                    taskButton.style.textDecoration = 'line-through';
+                    checkTask(task._id, true);
+                } else {
+                    taskButton.style.textDecoration = 'none';
+                    checkTask(task._id, false);
+                }
+            });
 
             //button
             let taskButton = document.createElement('button');
             taskButton.classList.add('task-button');
             taskButton.textContent = task.title;
-            // if (task.complete) {
-            //     button.style.textDecoration = 'line-through';
-            // }
+            if (task.complete) {
+                taskButton.style.textDecoration = 'line-through';
+            }
             taskButton.addEventListener('click', () => openTaskDetails(task._id));
 
             taskItem.appendChild(taskCheckbox);
@@ -142,6 +151,20 @@ document.addEventListener('DOMContentLoaded', async function() {
           eventButtonsEl.appendChild(button);
         });
       }
+    async function checkTask(taskID, isComplete) {
+        const response = await fetch(`/api/task/complete?id=${taskID}&isComplete=${isComplete}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Task update successful:', result);
+        } else {
+            console.error('Failed to update task completion');
+        }
+    }
 });
 
 

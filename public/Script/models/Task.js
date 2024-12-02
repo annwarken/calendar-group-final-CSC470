@@ -26,7 +26,7 @@ const TaskSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    complete:{
+    isComplete:{
         type: Boolean,
         required: true,
     }
