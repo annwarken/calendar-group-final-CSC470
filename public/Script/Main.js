@@ -102,12 +102,30 @@ document.addEventListener('DOMContentLoaded', async function() {
           return;
         }
         tasks.forEach((task) => {
-          const button = document.createElement('button');
-          button.classList.add('event-button');
-          button.textContent = task.title;
-          button.addEventListener('click', () => openTaskDetails(task._id));
-          console.log("Printing task button:", task._id);
-          taskButtonsEl.appendChild(button);
+            //task container
+            let taskItem = document.createElement('div');
+            taskItem.classList.add('task-item');
+
+            //checkbox
+            let taskCheckbox = document.createElement('input');
+            taskCheckbox.type = 'checkbox';
+            taskCheckbox.classList.add('task-checkbox');
+            taskCheckbox.checked = task.complete;
+            //update completion in database on check
+            //taskCheckbox.addEventListener('change', () => checkTask(task._id, task.complete));
+
+            //button
+            let taskButton = document.createElement('button');
+            taskButton.classList.add('task-button');
+            taskButton.textContent = task.title;
+            // if (task.complete) {
+            //     button.style.textDecoration = 'line-through';
+            // }
+            taskButton.addEventListener('click', () => openTaskDetails(task._id));
+
+            taskItem.appendChild(taskCheckbox);
+            taskItem.appendChild(taskButton);
+            taskButtonsEl.appendChild(taskItem);
         });
     }
     function updateEventButtons(events) {
