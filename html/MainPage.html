@@ -12,6 +12,7 @@
     <title>Calendar App</title>
     <!-- FullCalendar Links -->
     <link rel="stylesheet" href="../stylesheets/Main.css">
+    <link rel="stylesheet" href="../stylesheets/Modal.css">
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script src="../Script/Main.js"></script>
     <script src="../Script/EventDetails.js"></script>
@@ -52,7 +53,7 @@
 <div id="eventModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeEventModal()">&times;</span>
-        <h2 id="modalTitle"></h2> <!-- Dynamic title -->
+        <h2 id="eventModalTitle"></h2> <!-- Dynamic title -->
         <form id="eventForm">
             <input type="hidden" id="eventId" />
             
@@ -88,7 +89,7 @@
 <div id="taskModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeTaskModal()">&times;</span>
-        <h2 id="modalTitle"></h2> <!-- Dynamic title -->
+        <h2 id="taskModalTitle"></h2> <!-- Dynamic title -->
         <form id="taskForm">
             <input type="hidden" id="taskId" />
             

@@ -47,26 +47,6 @@ main {
 label {
     font-size: 20px;
 }
-#event-title, #event-date {  
-    width: 190px;          
-    height: 10px;
-    padding: 5px;                    
-}
-#event-time {  
-    width: 187px;          
-    height: 10px;   
-    padding: 5px;                  
-}
-#task-name {
-    width: 183px;          
-    height: 10px;
-    padding: 5px; 
-}
-textarea {
-    width: 253px;
-    height: 60px;
-    padding: 5px; 
-}
 
 /* style for buttons */
 .buttons {
