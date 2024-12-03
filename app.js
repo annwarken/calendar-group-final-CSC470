@@ -141,7 +141,7 @@ app.get('/Logout', (req, res) => {
     console.log('Logged out user: ', SessionUser._id);
     SessionUser = null;
     res.redirect('/Login');
-  });
+});
 
 app.get("/CreateAccount", function(req, res) {
     let contents = fs.readFileSync("./html/CreateAccountPage.html");
@@ -229,6 +229,31 @@ app.get("/api/user", async function(req, res){
 });
 
 // API fucntions
+app.post("/api/save/event", async function(req, res){
+    try{
+        const { title, description, startDate, endDate } = req.body;
+        let newEvent = new Event(title, description, startDate, endDate, SessionUser._id);
+        await Event.create(newEvent);
+        res.status(201).send({ message: 'Event created successfully' });
+    } catch (error) {
+        res.status(500).send({ error: 'Failed to save event' });
+    }
+});
+
+app.put("/api/save/event/:id", async function(req, res){
+    const { id } = req.params;
+    console.log("Saving event on server:", req.body);
+    const { title, description, startDate, endDate } = req.body;
+    try {
+        const updatedEvent = await Event.findByIdAndUpdate(id, { title, description, startDate, endDate }, { new: true });
+        console.log("Updated event: ", updatedEvent);
+        res.status(200).json(updatedEvent);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update event' });
+    }
+});
+
+
 app.get("/api/event/details", async function(req, res){
     try{
         //check if user has logged in
