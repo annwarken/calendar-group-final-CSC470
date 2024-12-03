@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             let taskCheckbox = document.createElement('input');
             taskCheckbox.type = 'checkbox';
             taskCheckbox.classList.add('task-checkbox');
-            taskCheckbox.checked = task.complete;
+            taskCheckbox.checked = task.isComplete;
             //update completion in database on check
             taskCheckbox.addEventListener('change', () => {
                 //strikethrough text when box is clicked
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             let taskButton = document.createElement('button');
             taskButton.classList.add('task-button');
             taskButton.textContent = task.title;
-            if (task.complete) {
+            if (task.isComplete) {
                 taskButton.style.textDecoration = 'line-through';
             }
             taskButton.addEventListener('click', () => openTaskDetails(task._id));
