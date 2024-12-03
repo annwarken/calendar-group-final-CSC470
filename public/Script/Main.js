@@ -201,6 +201,8 @@ function openEventDetails(eventId) {
         const endDate = new Date(eventData.endDate);
         document.getElementById('event-start-date').value = startDate.toISOString().split('T')[0];
         document.getElementById('event-end-date').value = endDate.toISOString().split('T')[0];
+        const time = startDate.toISOString().split('T')[1].split('Z')[0];
+        document.getElementById('event-time').value = time;
 
         updateEventEditMode(false);
         document.getElementById('eventModal').style.display = 'block';
