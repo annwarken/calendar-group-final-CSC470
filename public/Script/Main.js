@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     var taskButtonsEl = document.getElementById('todoList');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
+        timeZone: 'CT',
         events: function(fetchInfo) {
             // Dynamically fetch events based on the calendar's visible range
             return fetch('../../api/events') 
@@ -49,7 +50,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         dateClick: async function (info) {
             //update events/tasks when clicking date
             updateDayClick(info.dateStr);
-        }    
+        },
     });
 
     calendar.render();
