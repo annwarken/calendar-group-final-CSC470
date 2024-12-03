@@ -12,25 +12,31 @@
     font-size: 30px;
     font-family: "Comic Sans MS", Comic Sans, cursive;
     font-weight: bold;
+    margin: 0;
 }
 
 /* styles for the inputs */
-.modal #eventForm {
-    text-align: center;
+.input-boxes {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 250px;
     margin: 0 75px;
-}
-.modal .item {
-    margin: 10px;
 }
 .modal label {
     font-size: 20px;
+    margin-top: 15px;
+}
+.modal input {
+    height: 20px;
+    padding: 5px;
 }
 
 /* style for buttons */
 .modal .buttons {
     display: flex;
     padding: 15px;
-    text-align: center;
+    justify-content: center;
 }
 .modal button {
     border-width: 2px;
