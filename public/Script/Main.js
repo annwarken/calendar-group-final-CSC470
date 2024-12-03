@@ -234,6 +234,7 @@ function setEventMode() {
     document.getElementById('event-description').readOnly = !isEventEditModeEnabled;
     document.getElementById('event-start-date').disabled = !isEventEditModeEnabled;
     document.getElementById('event-end-date').disabled = !isEventEditModeEnabled;
+    document.getElementById('event-time').disabled = !isEventEditModeEnabled;
 }
 
 async function saveEvent()
