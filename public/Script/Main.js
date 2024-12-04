@@ -248,10 +248,26 @@ async function saveEvent()
     closeEventModal();
 }
 
-async function deleteEvent()
-{
-    console.log("Needs to be implemented");
-    closeEventModal();
+async function deleteEvent(eventId) {
+    try {
+        const response = await fetch(`/api/event/${eventId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert(result.message); // Show success message
+            // Remove the event from UI
+            document.getElementById(eventId).remove();
+            closeEventModal();
+        } else {
+            const error = await response.json();
+            alert(`Failed to delete event: ${error.error}`);
+        }
+    } catch (err) {
+        console.error("Error deleting event:", err);
+    }
 }
 
 function closeEventModal() {
@@ -368,10 +384,27 @@ async function saveTask() {
     closeTaskModal(); 
 }
 
-async function deleteTask()
+async function deleteTask(taskID)
 {
-    console.log("Needs to be implemented");
-    closeTaskModal();
+    try {
+        const response = await fetch(`/api/task/${taskId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert(result.message); // Show success message
+            // Remove the task from UI
+            document.getElementById(taskId).remove();
+            closeTaskModal();
+        } else {
+            const error = await response.json();
+            alert(`Failed to delete task: ${error.error}`);
+        }
+    } catch (err) {
+        console.error("Error deleting task:", err);
+    }
 }
 
 function closeTaskModal() {

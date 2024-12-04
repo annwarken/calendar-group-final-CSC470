@@ -91,6 +91,7 @@ async function AuthenticateUser(req, res) {
 }
 
 // GET and POST functions
+// And DELETE functions
 app.get("/", function(req, res) {
     res.redirect('/Login');
 });
@@ -277,7 +278,6 @@ app.put("/api/update/event/:id", async function(req, res){
     }
 });
 
-
 app.get("/api/event/details", async function(req, res){
     try{
         //check if user has logged in
@@ -356,6 +356,33 @@ app.get("/api/events", async function(req, res) {
     } catch (error) {
         console.error('Error fetching events:', error);
         res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.delete("/api/event/:id", async (req, res) => {
+    try {
+        // Check if user is authenticated
+        isAuth = await AuthenticateUser(req, res);
+        if (!isAuth) {
+            console.log("Failed to authenticate user");
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const { id } = req.params;
+
+        // Find and delete the event
+        const deletedEvent = await Event.findByIdAndDelete(id);
+
+        if (!deletedEvent) {
+            console.error("Event not found");
+            return res.status(404).json({ error: "Event not found" });
+        }
+
+        console.log("Deleted event:", deletedEvent);
+        res.status(200).json({ message: "Event deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting event:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
@@ -463,6 +490,33 @@ app.put("/api/task/complete", async function(req, res){
     {
         console.error('Error updating task status:', error);
         res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.delete("/api/task/:id", async (req, res) => {
+    try {
+        // Check if user is authenticated
+        isAuth = await AuthenticateUser(req, res);
+        if (!isAuth) {
+            console.log("Failed to authenticate user");
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const { id } = req.params;
+
+        // Find and delete the task
+        const deletedTask = await Task.findByIdAndDelete(id);
+
+        if (!deletedTask) {
+            console.error("Task not found");
+            return res.status(404).json({ error: "Task not found" });
+        }
+
+        console.log("Deleted task:", deletedTask);
+        res.status(200).json({ message: "Task deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting task:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
