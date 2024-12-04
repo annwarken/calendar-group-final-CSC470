@@ -31,6 +31,10 @@
     height: 20px;
     padding: 5px;
 }
+.modal textarea {
+    height: 50px;
+    padding: 5px;
+}
 
 /* style for buttons */
 .modal .buttons {
