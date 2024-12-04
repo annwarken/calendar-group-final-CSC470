@@ -229,7 +229,31 @@ app.get("/api/user", async function(req, res){
 });
 
 // API fucntions
-app.post("/api/save/event", async function(req, res){
+app.post("/api/save/task", async function(req, res) {
+    try {
+        const { title, description, date, isComplete } = req.body;
+        let newTask = new Task({ title, description, date, userID: SessionUser._id, isComplete });
+        await newTask.save();
+        res.status(201).send({ message: 'Task created successfully' });
+    } catch (error) {
+        res.status(500).send({ error: 'Failed to create task' });
+    }
+});
+
+app.put("/api/save/task/:id", async function(req, res){
+    const { id } = req.params;
+    console.log("Updating task on server:", req.body);
+    const { title, description, date, isComplete } = req.body;
+    try {
+        const updatedTask = await Task.findByIdAndUpdate(id, { title, description, date, isComplete }, { new: true });
+        console.log("Updated task: ", updatedTask);
+        res.status(200).json(updatedTask);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update task' });
+    }    
+});
+
+app.post("/api/create/event", async function(req, res){
     try{
         const { title, description, startDate, endDate } = req.body;
         let newEvent = new Event(title, description, startDate, endDate, SessionUser._id);
@@ -240,7 +264,7 @@ app.post("/api/save/event", async function(req, res){
     }
 });
 
-app.put("/api/save/event/:id", async function(req, res){
+app.put("/api/update/event/:id", async function(req, res){
     const { id } = req.params;
     console.log("Saving event on server:", req.body);
     const { title, description, startDate, endDate } = req.body;

@@ -7,6 +7,11 @@ let currentDay = today.getFullYear() + '-' +
             String(today.getMonth() + 1).padStart(2, '0') + '-' + 
             String(today.getDate()).padStart(2, '0');
 
+var calendarEl = document.getElementById('calendar');
+var eventButtonsEl = document.getElementById('eventList');
+var taskButtonsEl = document.getElementById('todoList');
+        
+
 let CurrentUser = "";
 async function getUserFirstName() {
     const userResponse = await fetch(`/api/user`);
@@ -23,9 +28,6 @@ async function getUserFirstName() {
 document.addEventListener('DOMContentLoaded', async function() {
     getUserFirstName();    
 
-    var calendarEl = document.getElementById('calendar');
-    var eventButtonsEl = document.getElementById('eventList');
-    var taskButtonsEl = document.getElementById('todoList');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         timeZone: 'CT',
@@ -57,116 +59,116 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     //update the events/tasks when page first loads
     await updateDayClick(currentDay);
-
-    async function updateDayClick(date) {
-      // Remove the highlighting from the previously selected day
-      if (selectedDay) {
-        const oldSelectedDay = document.querySelector(`[data-date="${selectedDay}"]`);
-        if (oldSelectedDay) {
-          oldSelectedDay.classList.remove('selected-day');
-        }
-      }
-
-      // Update the selected day variable
-      selectedDay = date;
-
-      // Highlight the new selected day
-      const newSelectedDay = document.querySelector(`[data-date="${selectedDay}"]`);
-      if (newSelectedDay) {
-        newSelectedDay.classList.add('selected-day');
-      }
-
-      // Fetch events for the selected day
-      const eventResponse = await fetch(`/api/events?startDate=${selectedDay}`);
-      if (eventResponse.ok) {
-        const events = await eventResponse.json();
-        updateEventButtons(events); // Update the side panel with events
-      } else {
-        console.error('Failed to fetch events for the selected day');
-      }
-
-      // Fetch tasks for the selected day
-      const taskResponse = await fetch(`/api/tasks?date=${selectedDay}`);
-      if (taskResponse.ok) {
-        const tasks = await taskResponse.json();
-        console.log(tasks);
-        updateTaskButtons(tasks); // Update the side panel with tasks
-      } else {
-        console.error('Failed to fetch tasks for the selected day');
-      }
-    }
-
-    function updateTaskButtons(tasks) {
-        taskButtonsEl.innerHTML = ''; 
-        if (tasks.length === 0) {
-          taskButtonsEl.innerHTML = '<p>No tasks for this day</p>';
-          return;
-        }
-        tasks.forEach((task) => {
-            //task container
-            let taskItem = document.createElement('div');
-            taskItem.classList.add('task-item');
-
-            //checkbox
-            let taskCheckbox = document.createElement('input');
-            taskCheckbox.type = 'checkbox';
-            taskCheckbox.classList.add('task-checkbox');
-            taskCheckbox.checked = task.isComplete;
-            //update completion in database on check
-            taskCheckbox.addEventListener('change', () => {
-                //strikethrough text when box is clicked
-                if (taskCheckbox.checked) {
-                    taskButton.style.textDecoration = 'line-through';
-                    checkTask(task._id, true);
-                } else {
-                    taskButton.style.textDecoration = 'none';
-                    checkTask(task._id, false);
-                }
-            });
-
-            //button
-            let taskButton = document.createElement('button');
-            taskButton.classList.add('task-button');
-            taskButton.textContent = task.title;
-            if (task.isComplete) {
-                taskButton.style.textDecoration = 'line-through';
-            }
-            taskButton.addEventListener('click', () => openTaskDetails(task._id));
-
-            taskItem.appendChild(taskCheckbox);
-            taskItem.appendChild(taskButton);
-            taskButtonsEl.appendChild(taskItem);
-        });
-    }
-    function updateEventButtons(events) {
-        eventButtonsEl.innerHTML = ''; 
-        if (events.length === 0) {
-          eventButtonsEl.innerHTML = '<p>No events for this day</p>';
-          return;
-        }
-        events.forEach((event) => {
-          const button = document.createElement('button');
-          button.classList.add('event-button');
-          button.textContent = event.title;
-          button.addEventListener('click', () => openEventDetails(event.id));
-          eventButtonsEl.appendChild(button);
-        });
-      }
-    async function checkTask(taskID, isComplete) {
-        const response = await fetch(`/api/task/complete?id=${taskID}&isComplete=${isComplete}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        if (response.ok) {
-            const result = await response.json();
-            console.log('Task update successful:', result);
-        } else {
-            console.error('Failed to update task completion');
-        }
-    }
 });
+
+async function updateDayClick(date) {
+    // Remove the highlighting from the previously selected day
+    if (selectedDay) {
+      const oldSelectedDay = document.querySelector(`[data-date="${selectedDay}"]`);
+      if (oldSelectedDay) {
+        oldSelectedDay.classList.remove('selected-day');
+      }
+    }
+
+    // Update the selected day variable
+    selectedDay = date;
+
+    // Highlight the new selected day
+    const newSelectedDay = document.querySelector(`[data-date="${selectedDay}"]`);
+    if (newSelectedDay) {
+      newSelectedDay.classList.add('selected-day');
+    }
+
+    // Fetch events for the selected day
+    const eventResponse = await fetch(`/api/events?startDate=${selectedDay}`);
+    if (eventResponse.ok) {
+      const events = await eventResponse.json();
+      updateEventButtons(events); // Update the side panel with events
+    } else {
+      console.error('Failed to fetch events for the selected day');
+    }
+
+    // Fetch tasks for the selected day
+    const taskResponse = await fetch(`/api/tasks?date=${selectedDay}`);
+    if (taskResponse.ok) {
+      const tasks = await taskResponse.json();
+      console.log(tasks);
+      updateTaskButtons(tasks); // Update the side panel with tasks
+    } else {
+      console.error('Failed to fetch tasks for the selected day');
+    }
+  }
+
+  function updateTaskButtons(tasks) {
+      taskButtonsEl.innerHTML = ''; 
+      if (tasks.length === 0) {
+        taskButtonsEl.innerHTML = '<p>No tasks for this day</p>';
+        return;
+      }
+      tasks.forEach((task) => {
+          //task container
+          let taskItem = document.createElement('div');
+          taskItem.classList.add('task-item');
+
+          //checkbox
+          let taskCheckbox = document.createElement('input');
+          taskCheckbox.type = 'checkbox';
+          taskCheckbox.classList.add('task-checkbox');
+          taskCheckbox.checked = task.isComplete;
+          //update completion in database on check
+          taskCheckbox.addEventListener('change', () => {
+              //strikethrough text when box is clicked
+              if (taskCheckbox.checked) {
+                  taskButton.style.textDecoration = 'line-through';
+                  checkTask(task._id, true);
+              } else {
+                  taskButton.style.textDecoration = 'none';
+                  checkTask(task._id, false);
+              }
+          });
+
+          //button
+          let taskButton = document.createElement('button');
+          taskButton.classList.add('task-button');
+          taskButton.textContent = task.title;
+          if (task.isComplete) {
+              taskButton.style.textDecoration = 'line-through';
+          }
+          taskButton.addEventListener('click', () => openTaskDetails(task._id));
+
+          taskItem.appendChild(taskCheckbox);
+          taskItem.appendChild(taskButton);
+          taskButtonsEl.appendChild(taskItem);
+      });
+  }
+  function updateEventButtons(events) {
+      eventButtonsEl.innerHTML = ''; 
+      if (events.length === 0) {
+        eventButtonsEl.innerHTML = '<p>No events for this day</p>';
+        return;
+      }
+      events.forEach((event) => {
+        const button = document.createElement('button');
+        button.classList.add('event-button');
+        button.textContent = event.title;
+        button.addEventListener('click', () => openEventDetails(event.id));
+        eventButtonsEl.appendChild(button);
+      });
+    }
+  async function checkTask(taskID, isComplete) {
+      const response = await fetch(`/api/task/complete?id=${taskID}&isComplete=${isComplete}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      });
+      if (response.ok) {
+          const result = await response.json();
+          console.log('Task update successful:', result);
+      } else {
+          console.error('Failed to update task completion');
+      }
+  }
 
 
 // Event Details Functionality //////////////////////////////////////////////////
@@ -321,12 +323,49 @@ function setTaskMode() {
     document.getElementById('task-title').readOnly = !isTaskEditModeEnabled;
     document.getElementById('task-description').readOnly = !isTaskEditModeEnabled;
     document.getElementById('task-date').disabled = !isTaskEditModeEnabled;
+    document.getElementById('task-complete').disabled = !isTaskEditModeEnabled;
 }
 
-async function saveTask()
-{
-    console.log("Needs to be implemented");
-    closeTaskModal();
+async function saveTask() {
+    const id = document.getElementById('taskId').value; // Retrieve task ID (if updating)
+    const title = document.getElementById('task-title').value; 
+    const date = document.getElementById('task-date').value; 
+    const description = document.getElementById('task-description').value;
+    const isComplete = document.getElementById('task-complete').checked; // Example field
+
+    // Construct task data object
+    const taskData = { 
+        title, 
+        description, 
+        date,
+        isComplete 
+    };
+
+    // Determine endpoint URL and HTTP method based on whether there's an ID
+    const url = id ? `/api/save/task/${id}` : '/api/save/task';
+    const method = id ? 'PUT' : 'POST';
+
+    try {
+        const taskResponse = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(taskData),
+        });
+
+        if (taskResponse.ok) {
+            const task = await taskResponse.json();
+            console.log('Task saved/updated successfully:', task);
+            updateDayClick(selectedDay);
+        } else {
+            console.error('Failed to save/update task');
+        }
+    } catch (error) {
+        console.error('Error saving/updating task:', error);
+    }
+
+    closeTaskModal(); 
 }
 
 async function deleteTask()
