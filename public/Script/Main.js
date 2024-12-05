@@ -1,16 +1,13 @@
-let selectedDay = null;
+const { DateTime } = luxon;
+let selectedDate = new Date();
+
 let isEventEditModeEnabled = false;
 let isTaskEditModeEnabled = false;
-//store current date with proper dateStr format
-let today = new Date();
-let currentDay = today.getFullYear() + '-' + 
-            String(today.getMonth() + 1).padStart(2, '0') + '-' + 
-            String(today.getDate()).padStart(2, '0');
 
-var calendarEl = document.getElementById('calendar');
+let calendar;
+
 var eventButtonsEl = document.getElementById('eventList');
 var taskButtonsEl = document.getElementById('todoList');
-        
 
 let CurrentUser = "";
 async function getUserFirstName() {
@@ -28,9 +25,9 @@ async function getUserFirstName() {
 document.addEventListener('DOMContentLoaded', async function() {
     getUserFirstName();    
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+    var calendarEl = document.getElementById('calendar');
+    calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        timeZone: 'CT',
         events: function(fetchInfo) {
             // Dynamically fetch events based on the calendar's visible range
             return fetch('../../api/events') 
@@ -58,29 +55,32 @@ document.addEventListener('DOMContentLoaded', async function() {
     calendar.render();
 
     //update the events/tasks when page first loads
-    await updateDayClick(currentDay);
+    console.log(DateTime.fromISO(selectedDate.toISOString()).toFormat("yyyy-MM-dd"));
+    await updateDayClick(DateTime.fromISO(selectedDate.toISOString()).toFormat("yyyy-MM-dd"));
 });
+
 
 async function updateDayClick(date) {
     // Remove the highlighting from the previously selected day
-    if (selectedDay) {
-      const oldSelectedDay = document.querySelector(`[data-date="${selectedDay}"]`);
-      if (oldSelectedDay) {
-        oldSelectedDay.classList.remove('selected-day');
+    if (selectedDate) {
+      const oldselectedDate = document.querySelector(`[data-date="${selectedDate.toISOString().split('T')[0]}"]`);
+      if (oldselectedDate) {
+        oldselectedDate.classList.remove('selected-day');
       }
     }
 
     // Update the selected day variable
-    selectedDay = date;
+    selectedDate = new Date(date);
 
     // Highlight the new selected day
-    const newSelectedDay = document.querySelector(`[data-date="${selectedDay}"]`);
-    if (newSelectedDay) {
-      newSelectedDay.classList.add('selected-day');
+    const newSelectedDate = document.querySelector(`[data-date="${selectedDate.toISOString().split('T')[0]}"]`);
+    if (newSelectedDate) {
+        newSelectedDate.classList.add('selected-day');
     }
 
     // Fetch events for the selected day
-    const eventResponse = await fetch(`/api/events?startDate=${selectedDay}`);
+    console.log(`/api/events?startDate=${selectedDate.toISOString()}&timezone=${selectedDate.getTimezoneOffset()}`);
+    const eventResponse = await fetch(`/api/events?startDate=${selectedDate.toISOString()}&timezone=${selectedDate.getTimezoneOffset()}`);
     if (eventResponse.ok) {
       const events = await eventResponse.json();
       updateEventButtons(events); // Update the side panel with events
@@ -89,7 +89,7 @@ async function updateDayClick(date) {
     }
 
     // Fetch tasks for the selected day
-    const taskResponse = await fetch(`/api/tasks?date=${selectedDay}`);
+    const taskResponse = await fetch(`/api/tasks?date=${selectedDate.toISOString()}`);
     if (taskResponse.ok) {
       const tasks = await taskResponse.json();
       console.log(tasks);
@@ -97,79 +97,80 @@ async function updateDayClick(date) {
     } else {
       console.error('Failed to fetch tasks for the selected day');
     }
-  }
+}
 
-  function updateTaskButtons(tasks) {
-      taskButtonsEl.innerHTML = ''; 
-      if (tasks.length === 0) {
-        taskButtonsEl.innerHTML = '<p>No tasks for this day</p>';
-        return;
-      }
-      tasks.forEach((task) => {
-          //task container
-          let taskItem = document.createElement('div');
-          taskItem.classList.add('task-item');
-
-          //checkbox
-          let taskCheckbox = document.createElement('input');
-          taskCheckbox.type = 'checkbox';
-          taskCheckbox.classList.add('task-checkbox');
-          taskCheckbox.checked = task.isComplete;
-          //update completion in database on check
-          taskCheckbox.addEventListener('change', () => {
-              //strikethrough text when box is clicked
-              if (taskCheckbox.checked) {
-                  taskButton.style.textDecoration = 'line-through';
-                  checkTask(task._id, true);
-              } else {
-                  taskButton.style.textDecoration = 'none';
-                  checkTask(task._id, false);
-              }
-          });
-
-          //button
-          let taskButton = document.createElement('button');
-          taskButton.classList.add('task-button');
-          taskButton.textContent = task.title;
-          if (task.isComplete) {
-              taskButton.style.textDecoration = 'line-through';
-          }
-          taskButton.addEventListener('click', () => openTaskDetails(task._id));
-
-          taskItem.appendChild(taskCheckbox);
-          taskItem.appendChild(taskButton);
-          taskButtonsEl.appendChild(taskItem);
-      });
-  }
-  function updateEventButtons(events) {
-      eventButtonsEl.innerHTML = ''; 
-      if (events.length === 0) {
-        eventButtonsEl.innerHTML = '<p>No events for this day</p>';
-        return;
-      }
-      events.forEach((event) => {
-        const button = document.createElement('button');
-        button.classList.add('event-button');
-        button.textContent = event.title;
-        button.addEventListener('click', () => openEventDetails(event.id));
-        eventButtonsEl.appendChild(button);
-      });
+function updateTaskButtons(tasks) {
+    taskButtonsEl.innerHTML = ''; 
+    if (tasks.length === 0) {
+    taskButtonsEl.innerHTML = '<p>No tasks for this day</p>';
+    return;
     }
-  async function checkTask(taskID, isComplete) {
-      const response = await fetch(`/api/task/complete?id=${taskID}&isComplete=${isComplete}`, {
-          method: 'PUT',
-          headers: {
-              'Content-Type': 'application/json'
-          }
-      });
-      if (response.ok) {
-          const result = await response.json();
-          console.log('Task update successful:', result);
-      } else {
-          console.error('Failed to update task completion');
-      }
-  }
+    tasks.forEach((task) => {
+        //task container
+        let taskItem = document.createElement('div');
+        taskItem.classList.add('task-item');
 
+        //checkbox
+        let taskCheckbox = document.createElement('input');
+        taskCheckbox.type = 'checkbox';
+        taskCheckbox.classList.add('task-checkbox');
+        taskCheckbox.checked = task.isComplete;
+        //update completion in database on check
+        taskCheckbox.addEventListener('change', () => {
+            //strikethrough text when box is clicked
+            if (taskCheckbox.checked) {
+                taskButton.style.textDecoration = 'line-through';
+                checkTask(task._id, true);
+            } else {
+                taskButton.style.textDecoration = 'none';
+                checkTask(task._id, false);
+            }
+        });
+
+        //button
+        let taskButton = document.createElement('button');
+        taskButton.classList.add('task-button');
+        taskButton.textContent = task.title;
+        if (task.isComplete) {
+            taskButton.style.textDecoration = 'line-through';
+        }
+        taskButton.addEventListener('click', () => openTaskDetails(task._id));
+
+        taskItem.appendChild(taskCheckbox);
+        taskItem.appendChild(taskButton);
+        taskButtonsEl.appendChild(taskItem);
+    });
+}
+
+function updateEventButtons(events) {
+    eventButtonsEl.innerHTML = ''; 
+    if (events.length === 0) {
+    eventButtonsEl.innerHTML = '<p>No events for this day</p>';
+    return;
+    }
+    events.forEach((event) => {
+    const button = document.createElement('button');
+    button.classList.add('event-button');
+    button.textContent = event.title;
+    button.addEventListener('click', () => openEventDetails(event.id));
+    eventButtonsEl.appendChild(button);
+    });
+}
+
+async function checkTask(taskID, isComplete) {
+    const response = await fetch(`/api/task/complete?id=${taskID}&isComplete=${isComplete}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    if (response.ok) {
+        const result = await response.json();
+        console.log('Task update successful:', result);
+    } else {
+        console.error('Failed to update task completion');
+    }
+}
 
 // Event Details Functionality //////////////////////////////////////////////////
 
@@ -178,9 +179,15 @@ function openCreateEvent()
 {
     closeTaskModal();
     document.getElementById('eventModalTitle').textContent = 'Create New Event';
-    document.getElementById('eventForm').reset(); // Clear form
-    document.getElementById('event-start-date').value = selectedDay;
-    document.getElementById('event-end-date').value = selectedDay;
+    document.getElementById('eventForm').reset();
+
+    const currentDate = new Date();
+    const startDate = new Date(selectedDate + "T" + currentDate.toISOString().substring(11, 16));
+    const endDate = new Date(startDate); 
+    endDate.setHours(startDate.getHours() + 2);    
+    document.getElementById('event-start-datetime').value = startDate.toISOString().slice(0, 16);
+    document.getElementById('event-end-datetime').value = endDate.toISOString().slice(0, 16);
+
     updateEventEditMode(true);
     document.getElementById('eventModal').style.display = 'block';
 }
@@ -200,12 +207,10 @@ function openEventDetails(eventId) {
         document.getElementById('eventId').value = eventData._id;
         document.getElementById('event-title').value = eventData.title;
         document.getElementById('event-description').value = eventData.description;
-        const startDate = new Date(eventData.startDate);
-        const endDate = new Date(eventData.endDate);
-        document.getElementById('event-start-date').value = startDate.toISOString().split('T')[0];
-        document.getElementById('event-end-date').value = endDate.toISOString().split('T')[0];
-        const time = startDate.toISOString().split('T')[1].split('Z')[0];
-        document.getElementById('event-time').value = time;
+        const startDate = DateTime.fromISO(eventData.startDate).toFormat("yyyy-MM-dd'T'HH:mm");
+        const endDate = DateTime.fromISO(eventData.endDate).toFormat("yyyy-MM-dd'T'HH:mm");
+        document.getElementById('event-start-datetime').value = startDate;
+        document.getElementById('event-end-datetime').value = endDate;
 
         updateEventEditMode(false);
         document.getElementById('eventModal').style.display = 'block';
@@ -237,16 +242,52 @@ function updateEventEditMode(editable) {
 function setEventMode() {
     document.getElementById('event-title').readOnly = !isEventEditModeEnabled;
     document.getElementById('event-description').readOnly = !isEventEditModeEnabled;
-    document.getElementById('event-start-date').disabled = !isEventEditModeEnabled;
-    document.getElementById('event-end-date').disabled = !isEventEditModeEnabled;
-    document.getElementById('event-time').disabled = !isEventEditModeEnabled;
+    document.getElementById('event-start-datetime').disabled = !isEventEditModeEnabled;
+    document.getElementById('event-end-datetime').disabled = !isEventEditModeEnabled;
 }
 
-async function saveEvent()
-{
-    console.log("Needs to be implemented");
-    closeEventModal();
+async function saveEvent() {
+    const id = document.getElementById('eventId').value;
+    const title = document.getElementById('event-title').value; 
+    const description = document.getElementById('event-description').value;
+    const startDate = document.getElementById('event-start-datetime').value; 
+    const endDate = document.getElementById('event-end-datetime').value; 
+
+    const eventData = { 
+        title, 
+        description, 
+        startDate,
+        endDate,
+    };
+
+    const url = id ? `/api/save/event/${id}` : '/api/save/event';
+    const method = id ? 'PUT' : 'POST';
+
+    try {
+        const eventResponse = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(eventData),
+        });
+
+        if (eventResponse.ok) {
+            const task = await eventResponse.json();
+            console.log('Event saved/updated successfully:', task);
+            updateDayClick(selectedDate);
+        } else {
+            console.error('Failed to save/update event');
+        }
+    } catch (error) {
+        console.error('Error saving/updating event:', error);
+    }
+
+    closeEventModal(); 
+    calendar.refetchEvents();
+    updateDayClick(selectedDate);
 }
+
 
 async function deleteEvent(eventId) {
     try {
@@ -284,7 +325,7 @@ function openCreateTask()
     closeEventModal();
     document.getElementById('taskModalTitle').textContent = 'Create New Task';
     document.getElementById('taskForm').reset(); // Clear form
-    document.getElementById('task-date').value = selectedDay;
+    document.getElementById('task-date').value = selectedDate;
     updateTaskEditMode(true);
     document.getElementById('taskModal').style.display = 'block';
 }
@@ -343,13 +384,12 @@ function setTaskMode() {
 }
 
 async function saveTask() {
-    const id = document.getElementById('taskId').value; // Retrieve task ID (if updating)
+    const id = document.getElementById('taskId').value;
     const title = document.getElementById('task-title').value; 
     const date = document.getElementById('task-date').value; 
     const description = document.getElementById('task-description').value;
-    const isComplete = document.getElementById('task-complete').checked; // Example field
+    const isComplete = document.getElementById('task-complete').checked; 
 
-    // Construct task data object
     const taskData = { 
         title, 
         description, 
@@ -357,7 +397,6 @@ async function saveTask() {
         isComplete 
     };
 
-    // Determine endpoint URL and HTTP method based on whether there's an ID
     const url = id ? `/api/save/task/${id}` : '/api/save/task';
     const method = id ? 'PUT' : 'POST';
 
@@ -373,7 +412,7 @@ async function saveTask() {
         if (taskResponse.ok) {
             const task = await taskResponse.json();
             console.log('Task saved/updated successfully:', task);
-            updateDayClick(selectedDay);
+            updateDayClick(selectedDate);
         } else {
             console.error('Failed to save/update task');
         }

@@ -4,24 +4,27 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
 
+const { DateTime } = require("luxon");
+
 // Check if the environment is for testing
 const isTestEnv = process.env.NODE_ENV === 'test';
-console.log(isTestEnv);
+console.log("Testing:", isTestEnv);
 
 // Conditionally load the User model based on environment
 let Event;
 let Task;
 let User;
+
 if (isTestEnv) {
   // Use the mock user model for testing
   User = require("./tests/mocks/UserModelMock.js");
 } else {
-  // Use the actual user model for production
+  // Use the actual models for production
   User = require("./public/Script/models/User");
   Event=require("./public/Script/models/Event");
   Task = require("./public/Script/models/Task");
 }
-// const User=require("./public/Script/models/User");
+
 const path = require("path");
 
 app.use(express.urlencoded({ extended: true }));
@@ -254,7 +257,7 @@ app.put("/api/save/task/:id", async function(req, res){
     }    
 });
 
-app.post("/api/create/event", async function(req, res){
+app.post("/api/save/event", async function(req, res){
     try{
         const { title, description, startDate, endDate } = req.body;
         let newEvent = new Event(title, description, startDate, endDate, SessionUser._id);
@@ -265,7 +268,7 @@ app.post("/api/create/event", async function(req, res){
     }
 });
 
-app.put("/api/update/event/:id", async function(req, res){
+app.put("/api/save/event/:id", async function(req, res){
     const { id } = req.params;
     console.log("Saving event on server:", req.body);
     const { title, description, startDate, endDate } = req.body;
@@ -309,38 +312,37 @@ app.get("/api/event/details", async function(req, res){
 
 app.get("/api/events", async function(req, res) {
     try {
-        //check if user has logged in
-        isAuth = await AuthenticateUser(req, res);
-        if(isAuth) {
+        // Check if user is authenticated
+        const isAuth = await AuthenticateUser(req, res);
+        if (isAuth) {
             console.log("User authenticated successfully");
-        }
-        else {
+        } else {
             console.log("Failed to authenticate user");
             return res.status(200).redirect('/Login');
         }
 
-        // Get the current date if given
-        const { startDate } = req.query;
+        const { startDate, timezone } = req.query;
 
         let query = { createdBy: SessionUser._id };
 
-        if (startDate) {
-            // Parse the date to get the start and end of the day
-            const startOfDay = new Date(startDate);
-            const endOfDay = new Date(startOfDay); 
-            endOfDay.setDate(startOfDay.getDate() + 1); 
-        
-            console.log("Start of Day:", startOfDay);
-            console.log("End of Day:", endOfDay);
-        
+        if (startDate && timezone !== undefined) {
+            const localDate = DateTime.fromISO(startDate).plus({ minutes: parseInt(timezone) });
+
+            const startOfDayUTC = localDate.startOf('day').toUTC().toJSDate();  
+            const endOfDayUTC = localDate.endOf('day').toUTC().toJSDate();
+
+            console.log("Start of Day (UTC):", startOfDayUTC);
+            console.log("End of Day (UTC):", endOfDayUTC);
+
+            // Update the query to filter events within the selected date range
             query.$and = [
-                { startDate: { $lt: endOfDay } },  // Events starting before or on this day
-                { endDate: { $gte: startOfDay } }  // Events ending on or after this day
-            ];        
+                { startDate: { $lt: endOfDayUTC } },  
+                { endDate: { $gte: startOfDayUTC } }
+            ];
         }
 
         // Find events for the logged-in user
-        SessionUserEvents = await Event.find(query).exec();
+        const SessionUserEvents = await Event.find(query).exec();
 
         // Map the events to the required format for FullCalendar
         const calendarEvents = SessionUserEvents.map(event => ({
@@ -440,12 +442,10 @@ app.get("/api/tasks", async function(req, res) {
             console.log("End of Day:", endOfDay);
                     
             query.$and = [
-                { date: { $lt: endOfDay } },  // Events starting before or on this day
-                { date: { $gte: startOfDay } }  // Events ending on or after this day
+                { date: { $lt: endOfDay } }, 
+                { date: { $gte: startOfDay } }
             ];   
         }
-
-        console.log(query);
 
         // Find tasks for the logged-in user
         SessionUserTasks = await Task.find(query).exec();
@@ -483,7 +483,7 @@ app.put("/api/task/complete", async function(req, res){
             res.status(500).json({ message: 'Internal server error' });
         }
         else {
-            console.log('Updated Task:', updatedTask);
+            console.log('Updated Task:', updatedTask._id);
             res.status(200).json(updatedTask);
         }
     } catch (error)
@@ -512,7 +512,7 @@ app.delete("/api/task/:id", async (req, res) => {
             return res.status(404).json({ error: "Task not found" });
         }
 
-        console.log("Deleted task:", deletedTask);
+        console.log("Deleted task:", deletedTask._id);
         res.status(200).json({ message: "Task deleted successfully" });
     } catch (error) {
         console.error("Error deleting task:", error);
