@@ -50,6 +50,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             //update events/tasks when clicking date
             updateDayClick(info.dateStr);
         },
+        eventClick: function (info) {
+            //opens details page when clicking calendar event
+            openEventDetails(info.event.id)
+        }
     });
 
     calendar.render();
@@ -149,11 +153,11 @@ function updateEventButtons(events) {
     return;
     }
     events.forEach((event) => {
-    const button = document.createElement('button');
-    button.classList.add('event-button');
-    button.textContent = event.title;
-    button.addEventListener('click', () => openEventDetails(event.id));
-    eventButtonsEl.appendChild(button);
+        const button = document.createElement('button');
+        button.classList.add('event-button');
+        button.textContent = event.title;
+        button.addEventListener('click', () => openEventDetails(event.id));
+        eventButtonsEl.appendChild(button);
     });
 }
 
