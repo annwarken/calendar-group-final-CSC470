@@ -364,30 +364,34 @@ app.get("/api/events", async function(req, res) {
     }
 });
 
-app.delete("/api/event/:id", async (req, res) => {
+app.delete("/api/delete/event/:id", async function(req, res) {
     try {
-        // Check if user is authenticated
+        //check if user has logged in
         isAuth = await AuthenticateUser(req, res);
-        if (!isAuth) {
+        if(isAuth) {
+            console.log("User authenticated successfully");
+        }
+        else {
             console.log("Failed to authenticate user");
-            return res.status(401).json({ error: "Unauthorized" });
+            return res.status(200).redirect('/Login');
         }
 
         const { id } = req.params;
+        console.log("Received event ID for deletion:", id);
 
-        // Find and delete the event
-        const deletedEvent = await Event.findByIdAndDelete(id);
+        // Delete the event
+        const deleteResult = await Event.deleteOne({ _id: id});
+        console.log("Delete result:", deleteResult);
 
-        if (!deletedEvent) {
-            console.error("Event not found");
-            return res.status(404).json({ error: "Event not found" });
+        if (deleteResult.deletedCount === 0) {
+            return res.status(404).json({ error: "Event not found or unauthorized" });
         }
 
-        console.log("Deleted event:", deletedEvent);
+        console.log("Deleted event with ID:", id);
         res.status(200).json({ message: "Event deleted successfully" });
     } catch (error) {
-        console.error("Error deleting event:", error);
-        res.status(500).json({ error: "Internal server error" });
+        console.error('Error deleting event:', error);
+        res.status(500).json({ error: 'Failed to delete event', details: error.message });
     }
 });
 
@@ -496,30 +500,34 @@ app.put("/api/task/complete", async function(req, res){
     }
 });
 
-app.delete("/api/task/:id", async (req, res) => {
+app.delete("/api/delete/task/:id", async function(req, res) {
     try {
-        // Check if user is authenticated
+        //check if user has logged in
         isAuth = await AuthenticateUser(req, res);
-        if (!isAuth) {
+        if(isAuth) {
+            console.log("User authenticated successfully");
+        }
+        else {
             console.log("Failed to authenticate user");
-            return res.status(401).json({ error: "Unauthorized" });
+            return res.status(200).redirect('/Login');
         }
 
         const { id } = req.params;
+        console.log("Received task ID for deletion:", id);
 
-        // Find and delete the task
-        const deletedTask = await Task.findByIdAndDelete(id);
+        // Delete the task
+        const deleteResult = await Task.deleteOne({ _id: id});
+        console.log("Delete result:", deleteResult);
 
-        if (!deletedTask) {
-            console.error("Task not found");
-            return res.status(404).json({ error: "Task not found" });
+        if (deleteResult.deletedCount === 0) {
+            return res.status(404).json({ error: "Task not found or unauthorized" });
         }
 
-        console.log("Deleted task:", deletedTask._id);
+        console.log("Deleted task with ID:", id);
         res.status(200).json({ message: "Task deleted successfully" });
     } catch (error) {
-        console.error("Error deleting task:", error);
-        res.status(500).json({ error: "Internal server error" });
+        console.error('Error deleting task:', error);
+        res.status(500).json({ error: 'Failed to delete task', details: error.message });
     }
 });
 

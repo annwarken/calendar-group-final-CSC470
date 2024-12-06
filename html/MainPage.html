@@ -10,7 +10,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Calendar App</title>
-    <!-- FullCalendar Links -->
     <link rel="stylesheet" href="../stylesheets/Main.css">
     <link rel="stylesheet" href="../stylesheets/Modal.css">
 </head>
@@ -69,7 +68,7 @@
             <div class="buttons">
                 <button type="button" id="save-event" onclick="saveEvent()">Save</button>
                 <button type="button" id="edit-event" onclick="updateEventEditMode(true)">Edit</button>
-                <button typ="button" id="delete-event" onclick="deleteEvent(eventId)">Delete</button>
+                <button typ="button" id="delete-event" onclick="deleteEvent()">Delete</button>
            </div>
         </form>
     </div>
@@ -99,7 +98,7 @@
             <div class="buttons">
                 <button type="button" id="save-task" onclick="saveTask()">Save</button>
                 <button type="button" id="edit-task" onclick="updateTaskEditMode(true)">Edit</button>
-                <button type="button" id="delete-task" onclick="deleteTask(taskId)">Delete</button>
+                <button type="button" id="delete-task" onclick="deleteTask()">Delete</button>
             </div>
         </form>
     </div>

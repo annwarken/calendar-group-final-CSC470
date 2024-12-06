@@ -50,6 +50,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             //update events/tasks when clicking date
             updateDayClick(info.dateStr);
         },
+        eventClick: function (info) {
+            //opens details page when clicking calendar event
+            openEventDetails(info.event.id)
+        }
     });
 
     calendar.render();
@@ -80,6 +84,7 @@ async function updateDayClick(date) {
     // Fetch events for the selected day
     console.log(`/api/events?startDate=${selectedDate.toISOString()}&timezone=${selectedDate.getTimezoneOffset()}`);
     const eventResponse = await fetch(`/api/events?startDate=${selectedDate.toISOString()}&timezone=${selectedDate.getTimezoneOffset()}`);
+    const taskResponse = await fetch(`/api/tasks?date=${selectedDate.toISOString()}`);
     if (eventResponse.ok) {
       const events = await eventResponse.json();
       updateEventButtons(events); // Update the side panel with events
@@ -88,7 +93,6 @@ async function updateDayClick(date) {
     }
 
     // Fetch tasks for the selected day
-    const taskResponse = await fetch(`/api/tasks?date=${selectedDate.toISOString()}`);
     if (taskResponse.ok) {
       const tasks = await taskResponse.json();
       console.log(tasks);
@@ -148,11 +152,11 @@ function updateEventButtons(events) {
     return;
     }
     events.forEach((event) => {
-    const button = document.createElement('button');
-    button.classList.add('event-button');
-    button.textContent = event.title;
-    button.addEventListener('click', () => openEventDetails(event.id));
-    eventButtonsEl.appendChild(button);
+        const button = document.createElement('button');
+        button.classList.add('event-button');
+        button.textContent = event.title;
+        button.addEventListener('click', () => openEventDetails(event.id));
+        eventButtonsEl.appendChild(button);
     });
 }
 
@@ -284,27 +288,31 @@ async function saveEvent() {
     updateDayClick(selectedDate);
 }
 
+function deleteEvent() {
+    const eventId = document.getElementById('eventId').value;
+    
+    console.log('Attempting to delete event with ID:', eventId);
 
-async function deleteEvent(eventId) {
-    try {
-        const response = await fetch(`/api/event/${eventId}`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            alert(result.message); // Show success message
-            // Remove the event from UI
-            document.getElementById(eventId).remove();
-            closeEventModal();
-        } else {
-            const error = await response.json();
-            alert(`Failed to delete event: ${error.error}`);
-        }
-    } catch (err) {
-        console.error("Error deleting event:", err);
+    if (!eventId) {
+        console.error('No event ID found');
+        return;
     }
+
+    fetch(`/api/delete/event/${eventId}`, { 
+        method: 'DELETE' 
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Server response:', data);
+        closeEventModal();
+        updateDayClick(selectedDate);
+    })
+    .catch(error => {
+        console.error('Error deleting event:', error);
+    });
 }
 
 function closeEventModal() {
@@ -321,7 +329,8 @@ function openCreateTask()
     closeEventModal();
     document.getElementById('taskModalTitle').textContent = 'Create New Task';
     document.getElementById('taskForm').reset(); // Clear form
-    document.getElementById('task-date').value = selectedDate;
+    const taskDate = selectedDate.toISOString().split('T')[0];
+    document.getElementById('task-date').value = taskDate;
     updateTaskEditMode(true);
     document.getElementById('taskModal').style.display = 'block';
 }
@@ -419,27 +428,31 @@ async function saveTask() {
     closeTaskModal(); 
 }
 
-async function deleteTask(taskID)
-{
-    try {
-        const response = await fetch(`/api/task/${taskId}`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-        });
+function deleteTask() {
+    const taskId = document.getElementById('taskId').value;
+    
+    console.log('Attempting to delete task with ID:', taskId);
 
-        if (response.ok) {
-            const result = await response.json();
-            alert(result.message); // Show success message
-            // Remove the task from UI
-            document.getElementById(taskId).remove();
-            closeTaskModal();
-        } else {
-            const error = await response.json();
-            alert(`Failed to delete task: ${error.error}`);
-        }
-    } catch (err) {
-        console.error("Error deleting task:", err);
+    if (!taskId) {
+        console.error('No task ID found');
+        return;
     }
+
+    fetch(`/api/delete/task/${taskId}`, { 
+        method: 'DELETE' 
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json(); // Always try to parse the response
+    })
+    .then(data => {
+        console.log('Server response:', data);
+        closeTaskModal();
+        updateDayClick(selectedDate);
+    })
+    .catch(error => {
+        console.error('Error deleting task:', error);
+    });
 }
 
 function closeTaskModal() {
