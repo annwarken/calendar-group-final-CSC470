@@ -85,6 +85,7 @@ async function updateDayClick(date) {
     // Fetch events for the selected day
     console.log(`/api/events?startDate=${selectedDate.toISOString()}&timezone=${selectedDate.getTimezoneOffset()}`);
     const eventResponse = await fetch(`/api/events?startDate=${selectedDate.toISOString()}&timezone=${selectedDate.getTimezoneOffset()}`);
+    const taskResponse = await fetch(`/api/tasks?date=${selectedDate.toISOString()}`);
     if (eventResponse.ok) {
       const events = await eventResponse.json();
       updateEventButtons(events); // Update the side panel with events
@@ -93,7 +94,6 @@ async function updateDayClick(date) {
     }
 
     // Fetch tasks for the selected day
-    const taskResponse = await fetch(`/api/tasks?date=${selectedDate.toISOString()}`);
     if (taskResponse.ok) {
       const tasks = await taskResponse.json();
       console.log(tasks);
