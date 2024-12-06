@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     await updateDayClick(DateTime.fromISO(selectedDate.toISOString()).toFormat("yyyy-MM-dd"));
 });
 
-
 async function updateDayClick(date) {
     // Remove the highlighting from the previously selected day
     if (selectedDate) {
@@ -181,13 +180,10 @@ function openCreateEvent()
     document.getElementById('eventModalTitle').textContent = 'Create New Event';
     document.getElementById('eventForm').reset();
 
-    const currentDate = new Date();
-    const startDate = new Date(selectedDate + "T" + currentDate.toISOString().substring(11, 16));
-    const endDate = new Date(startDate); 
-    endDate.setHours(startDate.getHours() + 2);    
+    const startDate = new Date(selectedDate.toISOString().substring(0,10) + "T00:00");
+    const endDate = new Date(selectedDate.toISOString().substring(0,10) + "T02:00");
     document.getElementById('event-start-datetime').value = startDate.toISOString().slice(0, 16);
     document.getElementById('event-end-datetime').value = endDate.toISOString().slice(0, 16);
-
     updateEventEditMode(true);
     document.getElementById('eventModal').style.display = 'block';
 }
@@ -250,14 +246,14 @@ async function saveEvent() {
     const id = document.getElementById('eventId').value;
     const title = document.getElementById('event-title').value; 
     const description = document.getElementById('event-description').value;
-    const startDate = document.getElementById('event-start-datetime').value; 
-    const endDate = document.getElementById('event-end-datetime').value; 
+    const startDate = new Date(document.getElementById('event-start-datetime').value); 
+    const endDate = new Date(document.getElementById('event-end-datetime').value); 
 
     const eventData = { 
         title, 
         description, 
-        startDate,
-        endDate,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
     };
 
     const url = id ? `/api/save/event/${id}` : '/api/save/event';

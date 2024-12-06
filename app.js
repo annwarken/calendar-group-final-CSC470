@@ -258,12 +258,15 @@ app.put("/api/save/task/:id", async function(req, res){
 });
 
 app.post("/api/save/event", async function(req, res){
+    console.log(req.body);
     try{
         const { title, description, startDate, endDate } = req.body;
-        let newEvent = new Event(title, description, startDate, endDate, SessionUser._id);
+        let newEvent = new Event({title, description, startDate, endDate, createdBy: SessionUser._id});
+        console.log(newEvent);
         await Event.create(newEvent);
         res.status(201).send({ message: 'Event created successfully' });
     } catch (error) {
+        console.log(error);
         res.status(500).send({ error: 'Failed to save event' });
     }
 });
