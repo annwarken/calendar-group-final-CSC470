@@ -232,7 +232,6 @@ app.get("/api/user", async function(req, res){
     }
 });
 
-// API fucntions
 app.post("/api/save/task", async function(req, res) {
     try {
         const { title, description, date, isComplete } = req.body;

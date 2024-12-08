@@ -1,10 +1,3 @@
-// Buttons ///////////////////////////////
-// $('#log-in').on('click', () => {
-//     // takes username and password from page
-//     // Calls VerifyUser(username, password)
-// });
-
-
 window.addEventListener("load", function() {
     let createAccountButton = document.querySelector("#create-account");
 
