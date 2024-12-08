@@ -240,8 +240,8 @@ function updateEventEditMode(editable) {
   
 // Helper function to toggle read-only state
 function setEventMode() {
-    document.getElementById('event-title').readOnly = !isEventEditModeEnabled;
-    document.getElementById('event-description').readOnly = !isEventEditModeEnabled;
+    document.getElementById('event-title').disabled = !isEventEditModeEnabled;
+    document.getElementById('event-description').disabled = !isEventEditModeEnabled;
     document.getElementById('event-start-datetime').disabled = !isEventEditModeEnabled;
     document.getElementById('event-end-datetime').disabled = !isEventEditModeEnabled;
 }
@@ -382,8 +382,8 @@ function updateTaskEditMode(editable) {
   
 // Helper function to toggle read-only state
 function setTaskMode() {
-    document.getElementById('task-title').readOnly = !isTaskEditModeEnabled;
-    document.getElementById('task-description').readOnly = !isTaskEditModeEnabled;
+    document.getElementById('task-title').disabled = !isTaskEditModeEnabled;
+    document.getElementById('task-description').disabled = !isTaskEditModeEnabled;
     document.getElementById('task-date').disabled = !isTaskEditModeEnabled;
     document.getElementById('task-complete').disabled = !isTaskEditModeEnabled;
 }
@@ -443,7 +443,7 @@ function deleteTask() {
     })
     .then(response => {
         console.log('Response status:', response.status);
-        return response.json(); // Always try to parse the response
+        return response.json();
     })
     .then(data => {
         console.log('Server response:', data);
