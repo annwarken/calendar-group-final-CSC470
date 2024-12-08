@@ -35,6 +35,21 @@
     height: 50px;
     padding: 5px;
 }
+.modal input:disabled, 
+.modal textarea:disabled, 
+input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+}
+input[type="datetime-local"], input[type="date"] {
+    cursor: default; 
+}
+input[type="datetime-local"]::-webkit-calendar-picker-indicator, 
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+}
+input[type="checkbox"] {
+    cursor: pointer;
+}
 
 /* style for buttons */
 .modal .buttons {
@@ -47,4 +62,5 @@
     margin: 0 10px;
     width: 60px;
     height: 30px;
+    cursor: pointer;
 }
