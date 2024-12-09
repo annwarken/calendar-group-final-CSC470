@@ -351,6 +351,7 @@ function openTaskDetails(taskId) {
         document.getElementById('taskId').value = taskData._id;
         document.getElementById('task-title').value = taskData.title;
         document.getElementById('task-description').value = taskData.description;
+        document.getElementById('task-complete').checked = taskData.isComplete;
         const date = new Date(taskData.date);
         document.getElementById('task-date').value = date.toISOString().split('T')[0];
         
