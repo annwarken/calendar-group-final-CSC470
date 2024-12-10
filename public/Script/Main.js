@@ -28,6 +28,22 @@ document.addEventListener('DOMContentLoaded', async function() {
     var calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
+        customButtons: {
+            myToday: {
+                text: 'Today', 
+                click: async function() {
+                    const today = new Date();
+                    calendar.gotoDate(today); // Navigate the calendar to today's date
+    
+                    await updateDayClick(today.toISOString().split('T')[0]);
+                    console.log('Jumped to today');
+                }
+            }
+        },
+        headerToolbar: {
+            left: 'title',
+            right: 'prev,next myToday'
+        },
         events: function(fetchInfo) {
             // Dynamically fetch events based on the calendar's visible range
             return fetch('../../api/events')
@@ -56,6 +72,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         },
         eventColor: 'rgb(29, 46, 61)',
         eventDisplay: 'block',
+        datesSet: function() {
+            // reapply the 'selected-day class after navigating through months
+            const selectedDayEl = document.querySelector(`[data-date="${selectedDate.toISOString().split('T')[0]}"]`);
+            if (selectedDayEl) {
+                selectedDayEl.classList.add('selected-day');
+         }
+        },
 
     });
 
