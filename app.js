@@ -145,7 +145,8 @@ app.post("/Login", async function (req, res) {
 app.get('/Logout', (req, res) => {
     //clear cookies and send user to login page
     res.clearCookie('UserSession');
-    console.log('Logged out user: ', SessionUser._id);
+    if(SessionUser != null)
+        console.log('Logged out user: ', SessionUser._id);
     SessionUser = null;
     res.redirect('/Login');
 });
