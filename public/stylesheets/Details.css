@@ -4,21 +4,29 @@
     padding: 0;
 }
 html {
-    background-color: #fefefe;
+    background-color: rgb(29, 46, 61);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* the styles for the body */
 body {
     max-width: 400px;
+    background-color: lightgrey;
     width: 100%;
     border: 5px double #575757;
-    background-color: #e3e3e3;
-    border-radius: 5px;
-    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    padding: 20px;
+    margin: auto;
 }
 
 /* styles for the header */
 header {
+    font-family: Arial;
     padding: 0.5em 0.5em;
     text-align: center;
     font-size: 1.5em;
@@ -30,6 +38,13 @@ header .btn {
     border-width: 2px;
     border-radius: 50%;
     float: right;
+}
+#create-account {
+    background: transparent;
+    color: rgb(29, 46, 61);
+    font-size: 14px;
+    text-decoration: underline;
+    border: none; /* Remove border */
 }
 
 /* styles for the main content */
@@ -71,7 +86,7 @@ label {
     margin-right: 13px;
     text-align: center;   
     align-items: center;
-    font-size: 14px;         
+    font-size: 14px;  
 }
 
 /* styles for CreateAccountPage and LoginPage */
@@ -86,9 +101,11 @@ form input {
 }
 input[type="submit"] {
     cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
     width: 120px;
     height: 30px;
     border-width: 2px;
+    border-radius: 4px;
     margin-top: 10px;
     margin-bottom: 20px;
 }

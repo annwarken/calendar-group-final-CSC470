@@ -1,38 +1,40 @@
-body {
+html, body {
     margin: 0;
+    padding: 0;
+    height: 100%; /* Ensure the body can expand fully */
 }
+
 
 /* styles for header */
 header {
     text-align: center;
     background-color: rgb(29, 46, 61);
-    border: 5px double black;
+    height: 60px;
+    padding: 15px;
+    margin: 0;
 }
 header h1 {
     color: white;
-    font-family: "Comic Sans MS", Comic Sans, cursive;
+    font-family: Comic Sans MS, Comic Sans, cursive;
     font-weight: bold;
+    vertical-align: middle;
+    height: 60px;
+    padding: 15px;
+    margin: 0;
 }
 header button {
     float: right;
-    margin: 5px;
+    color: white;
+    background-color: transparent;
+    vertical-align: middle;
     cursor: pointer;                                         
-    width: 60px;
-    height: 30px;
-    border-width: 2px;
-    text-align: center;   
-    align-items: center;
-    font-size: 14px;  
-    background-color: lightgray;
+    border-width: 0px;
 }
 
 /* styles for main */
 main {
     background-color: lightgray;
-    border: 5px double black;
     border-top: none;
-    padding: 10px;
-    height: 725px;
 }
 .container {
     display: flex;
@@ -47,11 +49,10 @@ main {
 
 /* styles for calendar */
 .middle {
-    width: 840px;
-    height: 705px;
-    padding: 10px;
-    border: 1px solid black;
+    height: auto;
+    width: 80%;
     background-color: white;
+    padding: 25px;
 }
 .fc-today-button, .fc-prev-button, .fc-next-button {
     cursor: pointer;
@@ -100,7 +101,7 @@ main {
 
 /* style for event list */
 .left {
-    width: 175px;
+    width: 20%;
     margin-right: 10px;
 }
 #eventList {
@@ -142,7 +143,8 @@ main {
 
 /* styles for to-do list */
 .right {
-    width: 175px;
+    width: 20%;
+    float: right;
     margin-left: 10px;
 }
 #todoList {
@@ -175,7 +177,10 @@ main {
     cursor: pointer;
 }
 .task-checkbox:checked {
-    background-color: blue;
+    background-color: black;
+}
+.task-checkbox:hover {
+    background-color: gray;
 }
 .task-button {
     padding: 10px;

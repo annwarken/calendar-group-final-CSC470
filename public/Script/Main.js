@@ -53,7 +53,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         eventClick: function (info) {
             //opens details page when clicking calendar event
             openEventDetails(info.event.id)
-        }
+        },
+        eventColor: 'rgb(29, 46, 61)',
+        eventDisplay: 'block',
+
     });
 
     calendar.render();
@@ -240,8 +243,8 @@ function updateEventEditMode(editable) {
   
 // Helper function to toggle read-only state
 function setEventMode() {
-    document.getElementById('event-title').disabled = !isEventEditModeEnabled;
-    document.getElementById('event-description').disabled = !isEventEditModeEnabled;
+    document.getElementById('event-title').readOnly = !isEventEditModeEnabled;
+    document.getElementById('event-description').readOnly = !isEventEditModeEnabled;
     document.getElementById('event-start-datetime').disabled = !isEventEditModeEnabled;
     document.getElementById('event-end-datetime').disabled = !isEventEditModeEnabled;
 }
@@ -351,7 +354,6 @@ function openTaskDetails(taskId) {
         document.getElementById('taskId').value = taskData._id;
         document.getElementById('task-title').value = taskData.title;
         document.getElementById('task-description').value = taskData.description;
-        document.getElementById('task-complete').checked = taskData.isComplete;
         const date = new Date(taskData.date);
         document.getElementById('task-date').value = date.toISOString().split('T')[0];
         
@@ -383,8 +385,8 @@ function updateTaskEditMode(editable) {
   
 // Helper function to toggle read-only state
 function setTaskMode() {
-    document.getElementById('task-title').disabled = !isTaskEditModeEnabled;
-    document.getElementById('task-description').disabled = !isTaskEditModeEnabled;
+    document.getElementById('task-title').readOnly = !isTaskEditModeEnabled;
+    document.getElementById('task-description').readOnly = !isTaskEditModeEnabled;
     document.getElementById('task-date').disabled = !isTaskEditModeEnabled;
     document.getElementById('task-complete').disabled = !isTaskEditModeEnabled;
 }
@@ -444,7 +446,7 @@ function deleteTask() {
     })
     .then(response => {
         console.log('Response status:', response.status);
-        return response.json();
+        return response.json(); // Always try to parse the response
     })
     .then(data => {
         console.log('Server response:', data);
