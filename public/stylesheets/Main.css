@@ -60,7 +60,7 @@ main {
 .fc-daygrid-day {
     cursor: pointer;
     width: 86px;  
-    height: 86px; /* Fixed height for each day cell */
+    height: 100px;
 }
 .fc-day-today {
     font-weight: bold;
@@ -106,7 +106,7 @@ main {
 }
 .left div {
     overflow: auto;
-    height: 75%;
+    max-height: 75%;
 }
 #eventList {
     list-style-type: none;
