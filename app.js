@@ -3,6 +3,7 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
+const nocache = require("nocache");
 
 const { DateTime } = require("luxon");
 
@@ -32,6 +33,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.static("public"));
 app.use("/Script", express.static(path.join(__dirname, "Script")));
+app.use(nocache());
+app.set('etag', false);
 
 // Current Session Variables
 let SessionUser = null;

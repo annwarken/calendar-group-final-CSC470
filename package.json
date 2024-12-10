@@ -17,6 +17,7 @@
     "fullcalendar": "^6.1.15",
     "luxon": "^3.5.0",
     "mongodb": "^6.10.0",
+    "nocache": "^4.0.0",
     "passport": "^0.7.0",
     "sortablejs": "^1.15.3"
   },
