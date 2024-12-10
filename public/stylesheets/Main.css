@@ -104,6 +104,10 @@ main {
     width: 20%;
     margin-right: 10px;
 }
+.left div {
+    overflow: auto;
+    height: 75%;
+}
 #eventList {
     list-style-type: none;
     text-align: left;
@@ -146,6 +150,10 @@ main {
     width: 20%;
     float: right;
     margin-left: 10px;
+}
+.right div {
+    overflow: auto;
+    height: 75%;
 }
 #todoList {
     list-style-type: none;
