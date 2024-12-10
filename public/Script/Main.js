@@ -23,14 +23,14 @@ async function getUserFirstName() {
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
-    getUserFirstName();    
+    getUserFirstName();
 
     var calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         events: function(fetchInfo) {
             // Dynamically fetch events based on the calendar's visible range
-            return fetch('../../api/events') 
+            return fetch('../../api/events')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -106,7 +106,7 @@ async function updateDayClick(date) {
 }
 
 function updateTaskButtons(tasks) {
-    taskButtonsEl.innerHTML = ''; 
+    taskButtonsEl.innerHTML = '';
     if (tasks.length === 0) {
     taskButtonsEl.innerHTML = '<p>No tasks for this day</p>';
     return;
@@ -149,7 +149,7 @@ function updateTaskButtons(tasks) {
 }
 
 function updateEventButtons(events) {
-    eventButtonsEl.innerHTML = ''; 
+    eventButtonsEl.innerHTML = '';
     if (events.length === 0) {
     eventButtonsEl.innerHTML = '<p>No events for this day</p>';
     return;
@@ -231,7 +231,7 @@ function updateEventEditMode(editable) {
     if(isEventEditModeEnabled)
     {
         document.getElementById('save-event').style.display = 'block';
-        document.getElementById('edit-event').style.display = 'none';  
+        document.getElementById('edit-event').style.display = 'none';
     }
     else
     {
@@ -240,7 +240,7 @@ function updateEventEditMode(editable) {
     }
     console.log("Event edit mode:", isEventEditModeEnabled);
 }
-  
+
 // Helper function to toggle read-only state
 function setEventMode() {
     document.getElementById('event-title').readOnly = !isEventEditModeEnabled;
@@ -251,14 +251,14 @@ function setEventMode() {
 
 async function saveEvent() {
     const id = document.getElementById('eventId').value;
-    const title = document.getElementById('event-title').value; 
+    const title = document.getElementById('event-title').value;
     const description = document.getElementById('event-description').value;
-    const startDate = new Date(document.getElementById('event-start-datetime').value); 
-    const endDate = new Date(document.getElementById('event-end-datetime').value); 
+    const startDate = new Date(document.getElementById('event-start-datetime').value);
+    const endDate = new Date(document.getElementById('event-end-datetime').value);
 
-    const eventData = { 
-        title, 
-        description, 
+    const eventData = {
+        title,
+        description,
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
     };
@@ -286,14 +286,14 @@ async function saveEvent() {
         console.error('Error saving/updating event:', error);
     }
 
-    closeEventModal(); 
+    closeEventModal();
     calendar.refetchEvents();
     updateDayClick(selectedDate);
 }
 
 function deleteEvent() {
     const eventId = document.getElementById('eventId').value;
-    
+
     console.log('Attempting to delete event with ID:', eventId);
 
     if (!eventId) {
@@ -301,8 +301,8 @@ function deleteEvent() {
         return;
     }
 
-    fetch(`/api/delete/event/${eventId}`, { 
-        method: 'DELETE' 
+    fetch(`/api/delete/event/${eventId}`, {
+        method: 'DELETE'
     })
     .then(response => {
         console.log('Response status:', response.status);
@@ -321,6 +321,7 @@ function deleteEvent() {
 function closeEventModal() {
     isEventEditModeEnabled = false;
     let eventModal = document.getElementById('eventModal');
+    document.getElementById('eventId').value = null;
     eventModal.style.display = 'none';  // Hide the modal
 }
 
@@ -356,7 +357,7 @@ function openTaskDetails(taskId) {
         document.getElementById('task-description').value = taskData.description;
         const date = new Date(taskData.date);
         document.getElementById('task-date').value = date.toISOString().split('T')[0];
-        
+
         updateTaskEditMode(false);
         document.getElementById('taskModal').style.display = 'block';
     })
@@ -373,7 +374,7 @@ function updateTaskEditMode(editable) {
     if(isTaskEditModeEnabled)
     {
         document.getElementById('save-task').style.display = 'block';
-        document.getElementById('edit-task').style.display = 'none';  
+        document.getElementById('edit-task').style.display = 'none';
     }
     else
     {
@@ -382,7 +383,7 @@ function updateTaskEditMode(editable) {
     }
     console.log("Task edit mode:", isTaskEditModeEnabled);
 }
-  
+
 // Helper function to toggle read-only state
 function setTaskMode() {
     document.getElementById('task-title').readOnly = !isTaskEditModeEnabled;
@@ -393,16 +394,16 @@ function setTaskMode() {
 
 async function saveTask() {
     const id = document.getElementById('taskId').value;
-    const title = document.getElementById('task-title').value; 
-    const date = document.getElementById('task-date').value; 
+    const title = document.getElementById('task-title').value;
+    const date = document.getElementById('task-date').value;
     const description = document.getElementById('task-description').value;
-    const isComplete = document.getElementById('task-complete').checked; 
+    const isComplete = document.getElementById('task-complete').checked;
 
-    const taskData = { 
-        title, 
-        description, 
+    const taskData = {
+        title,
+        description,
         date,
-        isComplete 
+        isComplete
     };
 
     const url = id ? `/api/save/task/${id}` : '/api/save/task';
@@ -428,12 +429,12 @@ async function saveTask() {
         console.error('Error saving/updating task:', error);
     }
 
-    closeTaskModal(); 
+    closeTaskModal();
 }
 
 function deleteTask() {
     const taskId = document.getElementById('taskId').value;
-    
+
     console.log('Attempting to delete task with ID:', taskId);
 
     if (!taskId) {
@@ -441,8 +442,8 @@ function deleteTask() {
         return;
     }
 
-    fetch(`/api/delete/task/${taskId}`, { 
-        method: 'DELETE' 
+    fetch(`/api/delete/task/${taskId}`, {
+        method: 'DELETE'
     })
     .then(response => {
         console.log('Response status:', response.status);
@@ -461,9 +462,10 @@ function deleteTask() {
 function closeTaskModal() {
     isTaskEditModeEnabled = false;
     let taskModal = document.getElementById('taskModal');
+    document.getElementById('taskId').value = null;
     taskModal.style.display = 'none';  // Hide the modal
 }
-  
+
 // Close modal if the background is clicked
 window.onclick = function(event) {
     if (event.target.id === 'eventModal') {
