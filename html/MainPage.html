@@ -16,7 +16,7 @@
 </head>
 <body>
 <header>
-    <button type="button" class="fa fa-sign-out" id="logout" style="font-size:32px"></button>
+    <button type="button" class="fa fa-sign-out" id="logout" style="font-size:32px" onclick="logoutUser()"></button>
     <h1>Welcome, </h1>
 </header>
 <main>
@@ -49,6 +49,7 @@
     </div>
 </div>
 
+<!-- popup window for event details page -->
 <div id="eventModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeEventModal()">&times;</span>
@@ -79,6 +80,7 @@
     </div>
 </div>
 
+<!-- popup window for task details page -->
 <div id="taskModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeTaskModal()">&times;</span>

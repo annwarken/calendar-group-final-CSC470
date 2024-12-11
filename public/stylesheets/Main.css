@@ -148,12 +148,11 @@ main {
 /* styles for to-do list */
 .right {
     width: 20%;
-    float: right;
     margin-left: 10px;
 }
 .right div {
     overflow: auto;
-    height: 75%;
+    max-height: 75%;
 }
 #todoList {
     list-style-type: none;

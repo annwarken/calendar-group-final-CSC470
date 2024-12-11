@@ -1,28 +1,16 @@
+//global variables
 const { DateTime } = luxon;
 let selectedDate = new Date();
-
 let isEventEditModeEnabled = false;
 let isTaskEditModeEnabled = false;
-
 let calendar;
-
-var eventButtonsEl = document.getElementById('eventList');
-var taskButtonsEl = document.getElementById('todoList');
-
+let eventButtonsEl = document.getElementById('eventList');
+let taskButtonsEl = document.getElementById('todoList');
 let CurrentUser = "";
-async function getUserFirstName() {
-    const userResponse = await fetch(`/api/user`);
-    if (userResponse.ok) {
-        CurrentUser = await userResponse.json();
-        console.log(CurrentUser);
-        let welcomeMessage = document.querySelector("h1");
-        welcomeMessage.textContent = `Welcome, ${CurrentUser.firstname} ${CurrentUser.lastname}`;
-    } else {
-        console.error('Failed to fetch events for the selected day');
-    }
-}
 
+//functions run when page is loaded
 document.addEventListener('DOMContentLoaded', async function() {
+    //gets users name and displays it in the header
     getUserFirstName();
 
     var calendarEl = document.getElementById('calendar');
@@ -82,20 +70,37 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     });
 
-    calendar.render();
-
     //update the events/tasks when page first loads
     console.log(DateTime.fromISO(selectedDate.toISOString()).toFormat("yyyy-MM-dd"));
     await updateDayClick(DateTime.fromISO(selectedDate.toISOString()).toFormat("yyyy-MM-dd"));
+
+    calendar.render();
 });
+
+async function getUserFirstName() {
+    const userResponse = await fetch(`/api/user`);
+    if (userResponse.ok) {
+        CurrentUser = await userResponse.json();
+        console.log(CurrentUser);
+        let welcomeMessage = document.querySelector("h1");
+        welcomeMessage.textContent = `Welcome, ${CurrentUser.firstname} ${CurrentUser.lastname}`;
+    } else {
+        console.error('Failed to fetch events for the selected day');
+    }
+}
+
+function logoutUser() {
+    //clears cookies and returns user to login page
+    window.location.href = "/Logout";
+}
 
 async function updateDayClick(date) {
     // Remove the highlighting from the previously selected day
     if (selectedDate) {
-      const oldselectedDate = document.querySelector(`[data-date="${selectedDate.toISOString().split('T')[0]}"]`);
-      if (oldselectedDate) {
-        oldselectedDate.classList.remove('selected-day');
-      }
+        const oldselectedDate = document.querySelector(`[data-date="${selectedDate.toISOString().split('T')[0]}"]`);
+        if (oldselectedDate) {
+            oldselectedDate.classList.remove('selected-day');
+        }
     }
 
     // Update the selected day variable
@@ -112,27 +117,30 @@ async function updateDayClick(date) {
     const eventResponse = await fetch(`/api/events?startDate=${selectedDate.toISOString()}&timezone=${selectedDate.getTimezoneOffset()}`);
     const taskResponse = await fetch(`/api/tasks?date=${selectedDate.toISOString()}`);
     if (eventResponse.ok) {
-      const events = await eventResponse.json();
-      updateEventButtons(events); // Update the side panel with events
+        const events = await eventResponse.json();
+        updateEventButtons(events); // Update the side panel with events
     } else {
-      console.error('Failed to fetch events for the selected day');
+        console.error('Failed to fetch events for the selected day');
     }
 
     // Fetch tasks for the selected day
     if (taskResponse.ok) {
-      const tasks = await taskResponse.json();
-      console.log(tasks);
-      updateTaskButtons(tasks); // Update the side panel with tasks
+        const tasks = await taskResponse.json();
+        console.log(tasks);
+        updateTaskButtons(tasks); // Update the side panel with tasks
     } else {
-      console.error('Failed to fetch tasks for the selected day');
+        console.error('Failed to fetch tasks for the selected day');
     }
 }
 
 function updateTaskButtons(tasks) {
+    //clears button list
     taskButtonsEl.innerHTML = '';
+
+    //informs user if there are no tasks
     if (tasks.length === 0) {
-    taskButtonsEl.innerHTML = '<p>No tasks for this day</p>';
-    return;
+        taskButtonsEl.innerHTML = '<p>No tasks for this day</p>';
+        return;
     }
     tasks.forEach((task) => {
         //task container
@@ -163,6 +171,7 @@ function updateTaskButtons(tasks) {
         if (task.isComplete) {
             taskButton.style.textDecoration = 'line-through';
         }
+        //opens details on click
         taskButton.addEventListener('click', () => openTaskDetails(task._id));
 
         taskItem.appendChild(taskCheckbox);
@@ -172,21 +181,26 @@ function updateTaskButtons(tasks) {
 }
 
 function updateEventButtons(events) {
+    //clears button list
     eventButtonsEl.innerHTML = '';
+
+    //informs user if there are no events
     if (events.length === 0) {
-    eventButtonsEl.innerHTML = '<p>No events for this day</p>';
-    return;
+        eventButtonsEl.innerHTML = '<p>No events for this day</p>';
+        return;
     }
     events.forEach((event) => {
         const button = document.createElement('button');
         button.classList.add('event-button');
         button.textContent = event.title;
+        //on click, open details page
         button.addEventListener('click', () => openEventDetails(event.id));
         eventButtonsEl.appendChild(button);
     });
 }
 
 async function checkTask(taskID, isComplete) {
+    //api call to update isComplete in database
     const response = await fetch(`/api/task/complete?id=${taskID}&isComplete=${isComplete}`, {
         method: 'PUT',
         headers: {
@@ -203,7 +217,7 @@ async function checkTask(taskID, isComplete) {
 
 // Event Details Functionality //////////////////////////////////////////////////
 
-// Open modal for creating a new event
+// Open blank modal for creating a new event
 function openCreateEvent()
 {
     closeTaskModal();
@@ -218,32 +232,35 @@ function openCreateEvent()
     document.getElementById('eventModal').style.display = 'block';
 }
 
+//open modal to view/edit event details
 function openEventDetails(eventId) {
     closeTaskModal();
-    fetch(`/api/event/details?eventId=${eventId}`)
-    .then(response => {
-        if (!response.ok) {
-        throw new Error('Failed to fetch event details');
-        }
-        return response.json();
-    })
-    .then(eventData => {
-        console.log("Opening event details for:", eventData);
-        document.getElementById('eventModalTitle').textContent = 'Event Details';
-        document.getElementById('eventId').value = eventData._id;
-        document.getElementById('event-title').value = eventData.title;
-        document.getElementById('event-description').value = eventData.description;
-        const startDate = DateTime.fromISO(eventData.startDate).toFormat("yyyy-MM-dd'T'HH:mm");
-        const endDate = DateTime.fromISO(eventData.endDate).toFormat("yyyy-MM-dd'T'HH:mm");
-        document.getElementById('event-start-datetime').value = startDate;
-        document.getElementById('event-end-datetime').value = endDate;
 
-        updateEventEditMode(false);
-        document.getElementById('eventModal').style.display = 'block';
-    })
-    .catch(error => {
-        console.error('Error loading event details:', error);
-    });
+    //fetches event info and fills in all fields with it
+    fetch(`/api/event/details?eventId=${eventId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch event details');
+            }
+            return response.json();
+        })
+        .then(eventData => {
+            console.log("Opening event details for:", eventData);
+            document.getElementById('eventModalTitle').textContent = 'Event Details';
+            document.getElementById('eventId').value = eventData._id;
+            document.getElementById('event-title').value = eventData.title;
+            document.getElementById('event-description').value = eventData.description;
+            const startDate = DateTime.fromISO(eventData.startDate).toFormat("yyyy-MM-dd'T'HH:mm");
+            const endDate = DateTime.fromISO(eventData.endDate).toFormat("yyyy-MM-dd'T'HH:mm");
+            document.getElementById('event-start-datetime').value = startDate;
+            document.getElementById('event-end-datetime').value = endDate;
+
+            updateEventEditMode(false);
+            document.getElementById('eventModal').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error loading event details:', error);
+        });
 }
 
 // Enable editing of event details
@@ -251,13 +268,11 @@ function updateEventEditMode(editable) {
     isEventEditModeEnabled = editable;
     setEventMode();
 
-    if(isEventEditModeEnabled)
-    {
+    if(isEventEditModeEnabled) {
         document.getElementById('save-event').style.display = 'block';
         document.getElementById('edit-event').style.display = 'none';
     }
-    else
-    {
+    else {
         document.getElementById('save-event').style.display = 'none';
         document.getElementById('edit-event').style.display = 'block';
     }
@@ -272,6 +287,7 @@ function setEventMode() {
     document.getElementById('event-end-datetime').disabled = !isEventEditModeEnabled;
 }
 
+//saves event changes in database
 async function saveEvent() {
     const id = document.getElementById('eventId').value;
     const title = document.getElementById('event-title').value;
@@ -314,9 +330,9 @@ async function saveEvent() {
     updateDayClick(selectedDate);
 }
 
+//deletes event from database
 function deleteEvent() {
     const eventId = document.getElementById('eventId').value;
-
     console.log('Attempting to delete event with ID:', eventId);
 
     if (!eventId) {
@@ -327,20 +343,21 @@ function deleteEvent() {
     fetch(`/api/delete/event/${eventId}`, {
         method: 'DELETE'
     })
-    .then(response => {
-        console.log('Response status:', response.status);
-        return response.json();
-    })
-    .then(data => {
-        console.log('Server response:', data);
-        closeEventModal();
-        updateDayClick(selectedDate);
-    })
-    .catch(error => {
-        console.error('Error deleting event:', error);
-    });
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Server response:', data);
+            closeEventModal();
+            updateDayClick(selectedDate);
+        })
+        .catch(error => {
+            console.error('Error deleting event:', error);
+        });
 }
 
+//resets variables and closes modal
 function closeEventModal() {
     isEventEditModeEnabled = false;
     let eventModal = document.getElementById('eventModal');
@@ -350,7 +367,7 @@ function closeEventModal() {
 
 // Task Details Functionality ////////////////////////////////////////////////////
 
-// Open modal for creating a new task
+// Open blank modal for creating a new task
 function openCreateTask()
 {
     closeEventModal();
@@ -362,31 +379,33 @@ function openCreateTask()
     document.getElementById('taskModal').style.display = 'block';
 }
 
+//open modal to view/edit task details
 function openTaskDetails(taskId) {
     closeEventModal();
 
+    //fetches task info and fills all fields with it
     fetch(`/api/task/details?taskId=${taskId}`)
-    .then(response => {
-        if (!response.ok) {
-        throw new Error('Failed to fetch task details');
-        }
-        return response.json();
-    })
-    .then(taskData => {
-        console.log("Opening task details for:", taskData);
-        document.getElementById('taskModalTitle').textContent = 'Task Details';
-        document.getElementById('taskId').value = taskData._id;
-        document.getElementById('task-title').value = taskData.title;
-        document.getElementById('task-description').value = taskData.description;
-        const date = new Date(taskData.date);
-        document.getElementById('task-date').value = date.toISOString().split('T')[0];
+        .then(response => {
+            if (!response.ok) {
+            throw new Error('Failed to fetch task details');
+            }
+            return response.json();
+        })
+        .then(taskData => {
+            console.log("Opening task details for:", taskData);
+            document.getElementById('taskModalTitle').textContent = 'Task Details';
+            document.getElementById('taskId').value = taskData._id;
+            document.getElementById('task-title').value = taskData.title;
+            document.getElementById('task-description').value = taskData.description;
+            const date = new Date(taskData.date);
+            document.getElementById('task-date').value = date.toISOString().split('T')[0];
 
-        updateTaskEditMode(false);
-        document.getElementById('taskModal').style.display = 'block';
-    })
-    .catch(error => {
-        console.error('Error loading task details:', error);
-    });
+            updateTaskEditMode(false);
+            document.getElementById('taskModal').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error loading task details:', error);
+        });
 }
 
 // Enable editing of task details
@@ -394,13 +413,11 @@ function updateTaskEditMode(editable) {
     isTaskEditModeEnabled = editable;
     setTaskMode();
 
-    if(isTaskEditModeEnabled)
-    {
+    if(isTaskEditModeEnabled) {
         document.getElementById('save-task').style.display = 'block';
         document.getElementById('edit-task').style.display = 'none';
     }
-    else
-    {
+    else {
         document.getElementById('save-task').style.display = 'none';
         document.getElementById('edit-task').style.display = 'block';
     }
@@ -415,6 +432,7 @@ function setTaskMode() {
     document.getElementById('task-complete').disabled = !isTaskEditModeEnabled;
 }
 
+//saves task changes in database
 async function saveTask() {
     const id = document.getElementById('taskId').value;
     const title = document.getElementById('task-title').value;
@@ -455,9 +473,9 @@ async function saveTask() {
     closeTaskModal();
 }
 
+//deletes task from database
 function deleteTask() {
     const taskId = document.getElementById('taskId').value;
-
     console.log('Attempting to delete task with ID:', taskId);
 
     if (!taskId) {
@@ -468,20 +486,21 @@ function deleteTask() {
     fetch(`/api/delete/task/${taskId}`, {
         method: 'DELETE'
     })
-    .then(response => {
-        console.log('Response status:', response.status);
-        return response.json(); // Always try to parse the response
-    })
-    .then(data => {
-        console.log('Server response:', data);
-        closeTaskModal();
-        updateDayClick(selectedDate);
-    })
-    .catch(error => {
-        console.error('Error deleting task:', error);
-    });
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json(); // Always try to parse the response
+        })
+        .then(data => {
+            console.log('Server response:', data);
+            closeTaskModal();
+            updateDayClick(selectedDate);
+        })
+        .catch(error => {
+            console.error('Error deleting task:', error);
+        });
 }
 
+//clears variables and closes modal
 function closeTaskModal() {
     isTaskEditModeEnabled = false;
     let taskModal = document.getElementById('taskModal');
@@ -497,15 +516,3 @@ window.onclick = function(event) {
       closeTaskModal();
     }
 }
-
-// Logout Functionality //////////////////////////////////////////////////////////////
-
-window.addEventListener("load", function() {
-  let logoutButton = document.querySelector("#logout");
-
-  //clears cookies and returns user to login page
-  logoutButton.addEventListener("click", function() {
-      console.log("/Logout");
-      window.location.href = "/Logout";
-  });
-});
