@@ -5,10 +5,10 @@ const mongoose=require("mongoose"),
 
 conn = mongoose.connect("mongodb+srv://client:qjEKnFxFYIFOPRrq@calendarcluster.igx4v.mongodb.net/Calendar")
 .then(()=>{
-    console.log("mongo db connected");
+    console.log("mongo db connected for users");
 })
 .catch(()=>{
-    console.log("failed to connect to mongodb");
+    console.log("failed to connect to mongodb for users");
 })
 
 const UserSchema=new mongoose.Schema({
