@@ -21,9 +21,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                 text: 'Today', 
                 click: async function() {
                     const today = new Date();
-                    calendar.gotoDate(today); // Navigate the calendar to today's date
+                    // Navigate the calendar to today's date
+                    calendar.gotoDate(DateTime.fromISO(today.toISOString()).toFormat("yyyy-MM-dd"));
     
-                    await updateDayClick(today.toISOString().split('T')[0]);
+                    await updateDayClick(DateTime.fromISO(today.toISOString()).toFormat("yyyy-MM-dd"));
                     console.log('Jumped to today');
                 }
             }
