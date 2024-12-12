@@ -39,7 +39,7 @@ main {
 .container {
     display: flex;
     flex-wrap: nowrap;
-    height: 705px;
+    height: 830px;
 }
 .container h2 {
     font-family: "Comic Sans MS", Comic Sans, cursive;
@@ -48,11 +48,14 @@ main {
 }
 
 /* styles for calendar */
+#calendar {
+    height: 800px;
+}
 .middle {
-    height: auto;
+
     width: 80%;
     background-color: white;
-    padding: 25px;
+    padding: 15px;
 }
 .fc-today-button, .fc-prev-button, .fc-next-button {
     cursor: pointer;
@@ -60,7 +63,7 @@ main {
 .fc-daygrid-day {
     cursor: pointer;
     width: 86px;  
-    height: 100px;
+    height: 110px;
 }
 .fc-day-today {
     font-weight: bold;
@@ -153,7 +156,7 @@ main {
 }
 .right div {
     overflow: auto;
-    height: 75%;
+    max-height: 75%;
 }
 #todoList {
     list-style-type: none;
