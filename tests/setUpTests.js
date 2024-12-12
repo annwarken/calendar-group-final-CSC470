@@ -22,14 +22,6 @@ beforeAll(async () => {
     }
 });
 
-afterEach(async () => {
-    // Clear collections after each test
-    const collections = mongoose.connection.collections;
-    for (const key in collections) {
-        await collections[key].deleteMany({});
-    }
-});
-
 afterAll(async () => {
     // Close connection and stop MongoMemoryServer after tests are complete
     await mongoose.disconnect();

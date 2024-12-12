@@ -39,5 +39,6 @@ document.getElementById("createAccountForm").addEventListener("submit", async fu
 
 function goBack()
 {
+    //goes back to previous page
     history.back();
 }

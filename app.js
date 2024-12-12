@@ -4,8 +4,9 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const app = express();
 const nocache = require("nocache");
-
 const { DateTime } = require("luxon");
+const mongoose=require("mongoose");
+
 
 // Check if the environment is for testing
 const isTestEnv = process.env.NODE_ENV === 'test';
@@ -16,14 +17,23 @@ let Event;
 let Task;
 let User;
 
-if (isTestEnv) {
-  // Use the mock user model for testing
-  User = require("./tests/mocks/UserModelMock.js");
+if (isTestEnv) {  
+    // Use the mock user model for testing
+    User = require("./tests/mocks/UserModelMock.js");
+    Event = require("./tests/mocks/EventModelMock.js");
 } else {
-  // Use the actual models for production
-  User = require("./public/Script/models/User");
-  Event=require("./public/Script/models/Event");
-  Task = require("./public/Script/models/Task");
+    mongoose.connect("mongodb+srv://client:qjEKnFxFYIFOPRrq@calendarcluster.igx4v.mongodb.net/Calendar")
+    .then(()=>{
+        console.log("mongo db connected");
+    })
+    .catch(()=>{
+        console.log("failed to connect to mongodb");
+    })
+
+    // Use the actual models for production
+    User =  require("./public/Script/models/User");
+    Event = require("./public/Script/models/Event");
+    Task =  require("./public/Script/models/Task");
 }
 
 const path = require("path");
@@ -43,7 +53,7 @@ let SessionUserTasks = null;
 let isVerified = false;
 let isAuth = false;
 
-// server functions
+//////// server functions ////////////////////////////////////
 async function VerifyUser(username, password) {
     // calls GetUser(username) 
     // check database password with entered password 
@@ -96,9 +106,10 @@ async function AuthenticateUser(req, res) {
     }
 }
 
-// GET and POST functions
+//////// GET and POST functions //////////////////////////////
 // And DELETE functions
 app.get("/", function(req, res) {
+    //makes the login page the 'root' page
     res.redirect('/Login');
 });
 
@@ -145,7 +156,8 @@ app.post("/Login", async function (req, res) {
 app.get('/Logout', (req, res) => {
     //clear cookies and send user to login page
     res.clearCookie('UserSession');
-    console.log('Logged out user: ', SessionUser._id);
+    if(SessionUser != null)
+        console.log('Logged out user: ', SessionUser._id);
     SessionUser = null;
     res.redirect('/Login');
 });
@@ -208,13 +220,14 @@ app.get("/Calendar", async function(req, res) {
     }
 
     let contents = fs.readFileSync("./html/MainPage.html");
-
     res.header("Content-Type", "text/html");
     res.status(200);
     res.send(contents);
     res.end();
 });
 
+//////// API calls ///////////////////////////////////////////
+//returns details of given user
 app.get("/api/user", async function(req, res){
     try{
         //check if user has logged in
@@ -235,86 +248,8 @@ app.get("/api/user", async function(req, res){
     }
 });
 
-app.post("/api/save/task", async function(req, res) {
-    try {
-        const { title, description, date, isComplete } = req.body;
-        let newTask = new Task({ title, description, date, userID: SessionUser._id, isComplete });
-        await newTask.save();
-        res.status(201).send({ message: 'Task created successfully' });
-    } catch (error) {
-        res.status(500).send({ error: 'Failed to create task' });
-    }
-});
-
-app.put("/api/save/task/:id", async function(req, res){
-    const { id } = req.params;
-    console.log("Updating task on server:", req.body);
-    const { title, description, date, isComplete } = req.body;
-    try {
-        const updatedTask = await Task.findByIdAndUpdate(id, { title, description, date, isComplete }, { new: true });
-        console.log("Updated task: ", updatedTask);
-        res.status(200).json(updatedTask);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to update task' });
-    }    
-});
-
-app.post("/api/save/event", async function(req, res){
-    console.log(req.body);
-    try{
-        const { title, description, startDate, endDate } = req.body;
-        let newEvent = new Event({title, description, startDate, endDate, createdBy: SessionUser._id});
-        console.log(newEvent);
-        await Event.create(newEvent);
-        res.status(201).send({ message: 'Event created successfully' });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ error: 'Failed to save event' });
-    }
-});
-
-app.put("/api/save/event/:id", async function(req, res){
-    const { id } = req.params;
-    console.log("Saving event on server:", req.body);
-    const { title, description, startDate, endDate } = req.body;
-    try {
-        const updatedEvent = await Event.findByIdAndUpdate(id, { title, description, startDate, endDate }, { new: true });
-        console.log("Updated event: ", updatedEvent);
-        res.status(200).json(updatedEvent);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to update event' });
-    }
-});
-
-app.get("/api/event/details", async function(req, res){
-    try{
-        //check if user has logged in
-        isAuth = await AuthenticateUser(req, res);
-        if(isAuth) {
-            console.log("User authenticated successfully");
-        }
-        else {
-            console.log("Failed to authenticate user");
-            return res.status(200).redirect('/Login');
-        }
-
-        // get eventId
-        const { eventId } = req.query;
-        console.log("Fetching event details for:", eventId);
-
-        let query = { _id: eventId };
-
-        eventDetails = await Event.findOne(query).exec();
-        console.log("Event title: ", eventDetails.title);
-        res.status(200).json(eventDetails);    
-    }
-    catch(error)
-    {
-        console.error('Error fetching event details:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
-
+//////// API calls for events ////////////////////////////////
+//get all events within given time range
 app.get("/api/events", async function(req, res) {
     try {
         // Check if user is authenticated
@@ -366,6 +301,88 @@ app.get("/api/events", async function(req, res) {
     }
 });
 
+//get details of existing event
+app.get("/api/event/details", async function(req, res){
+    try{
+        //check if user has logged in
+        isAuth = await AuthenticateUser(req, res);
+        if(isAuth) {
+            console.log("User authenticated successfully");
+        }
+        else {
+            console.log("Failed to authenticate user");
+            return res.status(200).redirect('/Login');
+        }
+
+        // get eventId
+        const { eventId } = req.query;
+        console.log("Fetching event details for:", eventId);
+
+        let query = { _id: eventId };
+
+        eventDetails = await Event.findOne(query).exec();
+        console.log("Event title: ", eventDetails.title);
+        res.status(200).json(eventDetails);    
+    }
+    catch(error)
+    {
+        console.error('Error fetching event details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+//save new event
+app.post("/api/save/event", async function(req, res){
+    //check if user has logged in
+    isAuth = await AuthenticateUser(req, res);
+    if(isAuth) {
+        console.log("User authenticated successfully");
+    }
+    else {
+        console.log("Failed to authenticate user");
+        return res.status(200).redirect('/Login');
+    }
+    
+    const { title, description, startDate, endDate } = req.body;
+    console.log(req.body);
+    
+    if(title == "" || title == null || startDate == "" || startDate == null || endDate == "" || endDate == null)
+        res.status(400).send({ error: 'Missing fields' });
+    else{
+        try{
+            let newEvent = new Event({title, description, startDate, endDate, createdBy: SessionUser._id});
+            console.log(newEvent);
+            await Event.create(newEvent);
+            res.status(201).send({ message: 'Event created successfully' });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({ error: 'Failed to save event' });
+        }    
+    }
+});
+
+//update existing event
+app.put("/api/save/event/:id", async function(req, res){
+    const { id } = req.params;
+    console.log("Saving event on server:", req.body);
+    const { title, description, startDate, endDate } = req.body;
+    try {
+        const updatedEvent = await Event.findByIdAndUpdate(id, { title, description, startDate, endDate }, { new: true });
+        if(updatedEvent == null)
+        {
+            res.status(404).json({error: 'Could not find event'});    
+        }
+        else
+        {
+            console.log("Updated event: ", updatedEvent);
+            res.status(200).json(updatedEvent);    
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update event' });
+    }
+});
+
+//delete an existing event
 app.delete("/api/delete/event/:id", async function(req, res) {
     try {
         //check if user has logged in
@@ -397,35 +414,8 @@ app.delete("/api/delete/event/:id", async function(req, res) {
     }
 });
 
-app.get("/api/task/details", async function(req, res) {
-    try{
-        //check if user has logged in
-        isAuth = await AuthenticateUser(req, res);
-        if(isAuth) {
-            console.log("User authenticated successfully");
-        }
-        else {
-            console.log("Failed to authenticate user");
-            return res.status(200).redirect('/Login');
-        }
-
-        // get taskId
-        const { taskId } = req.query;
-        console.log("Fetching task details for:", taskId);
-
-        let query = { _id: taskId };
-
-        taskDetails = await Task.findOne(query).exec();
-        console.log("Task title: ", taskDetails.title);
-        res.status(200).json(taskDetails);    
-    }
-    catch(error)
-    {
-        console.error('Error fetching event details:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
-
+//////// API calls for tasks /////////////////////////////////
+//get all tasks for a given date
 app.get("/api/tasks", async function(req, res) {
     try {
         //check if user has logged in
@@ -467,6 +457,37 @@ app.get("/api/tasks", async function(req, res) {
     }
 });
 
+//get the details of a given task
+app.get("/api/task/details", async function(req, res) {
+    try{
+        //check if user has logged in
+        isAuth = await AuthenticateUser(req, res);
+        if(isAuth) {
+            console.log("User authenticated successfully");
+        }
+        else {
+            console.log("Failed to authenticate user");
+            return res.status(200).redirect('/Login');
+        }
+
+        // get taskId
+        const { taskId } = req.query;
+        console.log("Fetching task details for:", taskId);
+
+        let query = { _id: taskId };
+
+        taskDetails = await Task.findOne(query).exec();
+        console.log("Task title: ", taskDetails.title);
+        res.status(200).json(taskDetails);    
+    }
+    catch(error)
+    {
+        console.error('Error fetching event details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+//updates the completion of a task
 app.put("/api/task/complete", async function(req, res){
     try
     {
@@ -502,6 +523,33 @@ app.put("/api/task/complete", async function(req, res){
     }
 });
 
+//save new task
+app.post("/api/save/task", async function(req, res) {
+    try {
+        const { title, description, date, isComplete } = req.body;
+        let newTask = new Task({ title, description, date, userID: SessionUser._id, isComplete });
+        await newTask.save();
+        res.status(201).send({ message: 'Task created successfully' });
+    } catch (error) {
+        res.status(500).send({ error: 'Failed to create task' });
+    }
+});
+
+//update existing task
+app.put("/api/save/task/:id", async function(req, res){
+    const { id } = req.params;
+    console.log("Updating task on server:", req.body);
+    const { title, description, date, isComplete } = req.body;
+    try {
+        const updatedTask = await Task.findByIdAndUpdate(id, { title, description, date, isComplete }, { new: true });
+        console.log("Updated task: ", updatedTask);
+        res.status(200).json(updatedTask);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update task' });
+    }    
+});
+
+//delete existing task
 app.delete("/api/delete/task/:id", async function(req, res) {
     try {
         //check if user has logged in
@@ -542,5 +590,5 @@ if(!isTestEnv)
     const HOST = '127.0.0.1'; //Local IP 127.0.0.1:8080
     app.listen(PORT, HOST, () => {
         console.log(`Server is running on http://${HOST}:${PORT}`);
-      });
+    });
 }

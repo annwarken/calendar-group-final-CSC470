@@ -1,6 +1,6 @@
 const mongoose=require("mongoose");
 
-const TaskSchema = new mongoose.Schema({
+const EventSchema = new mongoose.Schema({
     title:{ 
         type: String, 
         required: true 
@@ -8,19 +8,21 @@ const TaskSchema = new mongoose.Schema({
     description:{
         type: String, 
     },
-    date:{ 
+    startDate:{ 
         type: Date, 
         required: true 
     },
-    userID:{                                     
+    endDate:{ 
+        type: Date, 
+    },
+    createdBy:{                                     
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-    isComplete:{
-        type: Boolean,
-        required: true,
-    }
 });
 
-module.exports = mongoose.models.Task || mongoose.model("Task", TaskSchema);
+// Create a mock Event model
+const Event = mongoose.model("Event", EventSchema);
+
+module.exports = Event;

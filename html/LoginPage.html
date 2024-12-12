@@ -3,26 +3,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <meta charset="UTF-8">
-     <title>Login</title>
-     <link rel="stylesheet" href="../stylesheets/Details.css">
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="../stylesheets/Details.css">
 </head>
 <body>
 <header>
-     <h1>Login</h1>
+    <h1>Login</h1>
 </header>
 <main>
-     <form id="loginForm">
-          <input placeholder="Username" type="text" name="username" id="username"><br>
-          <input placeholder="Password" type="password" name="password" id="password"><br>
-          <div id="error-message" class="error" style="color:red"></div>
-          <input type="submit" value="Login">
-     </form>
-     <div class="create-account">
-          <span>
-               <p>Don't have an account yet?<button type="button" id="create-account">Create one now</button></p>
-          </span>
-     </div>
+    <form id="loginForm">
+        <input placeholder="Username" type="text" name="username" id="username"><br>
+        <input placeholder="Password" type="password" name="password" id="password"><br>
+        <div id="error-message" class="error" style="color:red"></div>
+        <input type="submit" value="Login">
+    </form>
+    <div class="create-account">
+        <span>
+            <p>Don't have an account yet?<button type="button" id="create-account" onclick="createAccountButton()">Create one now</button></p>
+        </span>
+    </div>
 </main>
 <script src="../Script/Login.js"></script>
 </body>

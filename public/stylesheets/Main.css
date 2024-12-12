@@ -151,7 +151,6 @@ main {
 /* styles for to-do list */
 .right {
     width: 20%;
-    float: right;
     margin-left: 10px;
 }
 .right div {

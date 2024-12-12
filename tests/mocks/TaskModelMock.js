@@ -23,4 +23,8 @@ const TaskSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.models.Task || mongoose.model("Task", TaskSchema);
+
+// Create a mock Task model
+const Task = mongoose.model("Task", TaskSchema);
+
+module.exports = Task;

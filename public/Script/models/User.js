@@ -1,15 +1,6 @@
 const mongoose=require("mongoose"),
-    Schema = mongoose.Schema,
     bcrypt = require("bcrypt"),
     SALT_WORK_FACTOR = 10;
-
-conn = mongoose.connect("mongodb+srv://client:qjEKnFxFYIFOPRrq@calendarcluster.igx4v.mongodb.net/Calendar")
-.then(()=>{
-    console.log("mongo db connected");
-})
-.catch(()=>{
-    console.log("failed to connect to mongodb");
-})
 
 const UserSchema=new mongoose.Schema({
     username:{
