@@ -297,9 +297,15 @@ async function saveEvent() {
     const endDate = new Date(document.getElementById('event-end-datetime').value);
 
     if(title == "") {
-        //prompt user
-        const errorMessage = document.getElementById('event-error');
-        errorMessage.textContent = 'Title cannot be empty.';
+        //prompt user if title is empty
+        const titleErrorMessage = document.getElementById('event-error');
+        titleErrorMessage.textContent = 'Title cannot be empty.';
+        return;
+    }
+    if(endDate < startDate) {
+        //prompt user if end date is before start date
+        const dateErrorMessage = document.getElementById('event-date-error');
+        dateErrorMessage.textContent = 'End date cannot be less than start date.';
         return;
     }
 
@@ -372,8 +378,10 @@ function closeEventModal() {
     isEventEditModeEnabled = false;
     let eventModal = document.getElementById('eventModal');
     document.getElementById('eventId').value = null;
-    const errorMessage = document.getElementById('event-error');
-    errorMessage.textContent = '';
+    const titleErrorMessage = document.getElementById('event-error');
+    titleErrorMessage.textContent = '';
+    const dateErrorMessage = document.getElementById('event-date-error');
+    dateErrorMessage.textContent = '';
     eventModal.style.display = 'none';  // Hide the modal
 }
 
@@ -455,8 +463,8 @@ async function saveTask() {
 
     if(title == "") {
         //prompt user
-        const errorMessage = document.getElementById('task-error');
-        errorMessage.textContent = 'Title cannot be empty.';
+        const titleErrorMessage = document.getElementById('task-error');
+        titleErrorMessage.textContent = 'Title cannot be empty.';
         return;
     }
 
@@ -526,8 +534,8 @@ function closeTaskModal() {
     isTaskEditModeEnabled = false;
     let taskModal = document.getElementById('taskModal');
     document.getElementById('taskId').value = null;
-    const errorMessage = document.getElementById('task-error');
-    errorMessage.textContent = '';
+    const titleErrorMessage = document.getElementById('task-error');
+    titleErrorMessage.textContent = '';
     taskModal.style.display = 'none';  // Hide the modal
 }
 
