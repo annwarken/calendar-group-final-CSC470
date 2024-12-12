@@ -1,13 +1,5 @@
 const mongoose=require("mongoose");
 
-conn = mongoose.connect("mongodb+srv://client:qjEKnFxFYIFOPRrq@calendarcluster.igx4v.mongodb.net/Calendar")
-.then(()=>{
-    console.log("mongo db connected for tasks");
-})
-.catch(()=>{
-    console.log("failed to connect to mongodb for tasks");
-})
-
 const TaskSchema = new mongoose.Schema({
     title:{ 
         type: String, 

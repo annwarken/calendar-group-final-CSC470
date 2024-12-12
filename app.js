@@ -5,6 +5,8 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const nocache = require("nocache");
 const { DateTime } = require("luxon");
+const mongoose=require("mongoose");
+
 
 // Check if the environment is for testing
 const isTestEnv = process.env.NODE_ENV === 'test';
@@ -15,11 +17,19 @@ let Event;
 let Task;
 let User;
 
-if (isTestEnv) {
+if (isTestEnv) {  
     // Use the mock user model for testing
     User = require("./tests/mocks/UserModelMock.js");
     Event = require("./tests/mocks/EventModelMock.js");
 } else {
+    mongoose.connect("mongodb+srv://client:qjEKnFxFYIFOPRrq@calendarcluster.igx4v.mongodb.net/Calendar")
+    .then(()=>{
+        console.log("mongo db connected");
+    })
+    .catch(()=>{
+        console.log("failed to connect to mongodb");
+    })
+
     // Use the actual models for production
     User =  require("./public/Script/models/User");
     Event = require("./public/Script/models/Event");
