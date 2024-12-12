@@ -296,6 +296,13 @@ async function saveEvent() {
     const startDate = new Date(document.getElementById('event-start-datetime').value);
     const endDate = new Date(document.getElementById('event-end-datetime').value);
 
+    if(title == "") {
+        //prompt user
+        const errorMessage = document.getElementById('event-error');
+        errorMessage.textContent = 'Title cannot be empty.';
+        return;
+    }
+
     const eventData = {
         title,
         description,
@@ -338,6 +345,7 @@ function deleteEvent() {
 
     if (!eventId) {
         console.error('No event ID found');
+        closeEventModal();
         return;
     }
 
@@ -363,6 +371,8 @@ function closeEventModal() {
     isEventEditModeEnabled = false;
     let eventModal = document.getElementById('eventModal');
     document.getElementById('eventId').value = null;
+    const errorMessage = document.getElementById('event-error');
+    errorMessage.textContent = '';
     eventModal.style.display = 'none';  // Hide the modal
 }
 
@@ -442,6 +452,13 @@ async function saveTask() {
     const description = document.getElementById('task-description').value;
     const isComplete = document.getElementById('task-complete').checked;
 
+    if(title == "") {
+        //prompt user
+        const errorMessage = document.getElementById('task-error');
+        errorMessage.textContent = 'Title cannot be empty.';
+        return;
+    }
+
     const taskData = {
         title,
         description,
@@ -482,6 +499,7 @@ function deleteTask() {
 
     if (!taskId) {
         console.error('No task ID found');
+        closeTaskModal();
         return;
     }
 
@@ -507,6 +525,8 @@ function closeTaskModal() {
     isTaskEditModeEnabled = false;
     let taskModal = document.getElementById('taskModal');
     document.getElementById('taskId').value = null;
+    const errorMessage = document.getElementById('task-error');
+    errorMessage.textContent = '';
     taskModal.style.display = 'none';  // Hide the modal
 }
 
