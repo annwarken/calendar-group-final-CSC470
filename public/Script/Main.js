@@ -359,6 +359,7 @@ function deleteEvent() {
         .then(data => {
             console.log('Server response:', data);
             closeEventModal();
+            calendar.refetchEvents();
             updateDayClick(selectedDate);
         })
         .catch(error => {
