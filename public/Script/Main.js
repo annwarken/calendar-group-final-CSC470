@@ -400,6 +400,7 @@ function openTaskDetails(taskId) {
             document.getElementById('task-description').value = taskData.description;
             const date = new Date(taskData.date);
             document.getElementById('task-date').value = date.toISOString().split('T')[0];
+            document.getElementById('task-complete').checked = taskData.isComplete;
 
             updateTaskEditMode(false);
             document.getElementById('taskModal').style.display = 'block';
