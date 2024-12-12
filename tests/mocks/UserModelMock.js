@@ -31,6 +31,11 @@ UserSchema.pre("save", async function (next) {
     next();
 });
 
+// Add a method to simulate password comparison
+UserSchema.methods.comparePassword = async function(candidatePassword) {
+    return this.password === candidatePassword;
+};
+
 // Create a mock User model
 const User = mongoose.model("User", UserSchema);
 

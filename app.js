@@ -18,6 +18,7 @@ let User;
 if (isTestEnv) {
     // Use the mock user model for testing
     User = require("./tests/mocks/UserModelMock.js");
+    Event = require("./tests/mocks/EventModelMock.js");
 } else {
     // Use the actual models for production
     User =  require("./public/Script/models/User");
@@ -322,16 +323,21 @@ app.get("/api/event/details", async function(req, res){
 
 //save new event
 app.post("/api/save/event", async function(req, res){
+    const { title, description, startDate, endDate } = req.body;
     console.log(req.body);
-    try{
-        const { title, description, startDate, endDate } = req.body;
-        let newEvent = new Event({title, description, startDate, endDate, createdBy: SessionUser._id});
-        console.log(newEvent);
-        await Event.create(newEvent);
-        res.status(201).send({ message: 'Event created successfully' });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ error: 'Failed to save event' });
+    
+    if(title == "" || title == null || startDate == "" || startDate == null || endDate == "" || endDate == null)
+        res.status(400).send({ error: 'Missing fields' });
+    else{
+        try{
+            let newEvent = new Event({title, description, startDate, endDate, createdBy: SessionUser._id});
+            console.log(newEvent);
+            await Event.create(newEvent);
+            res.status(201).send({ message: 'Event created successfully' });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({ error: 'Failed to save event' });
+        }    
     }
 });
 
