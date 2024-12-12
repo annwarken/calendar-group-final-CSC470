@@ -85,7 +85,7 @@ describe("Event API Endpoints", () => {
             expect(response.status).toBe(400);
         });
 
-        test("should return 401 if user is not authenticated", async () => {
+        test("should return 302 if user is not authenticated", async () => {
             const newEvent = {
                 title: "Unauthorized Event",
                 description: "An event without authentication",
@@ -98,7 +98,7 @@ describe("Event API Endpoints", () => {
                 .send(newEvent)
                 .set("Content-Type", "application/json");
 
-            expect(response.status).toBe(401);
+            expect(response.status).toBe(302);
         });
     });
 
@@ -245,8 +245,8 @@ describe("Event API Endpoints", () => {
             const eventToFetch = new Event({
                 title: "Detailed Event",
                 description: "Event with full details",
-                startDate: new Date("2024-12-11T10:00:00Z"),
-                endDate: new Date("2024-12-11T12:00:00Z"),
+                startDate: new Date("2024-12-10T10:00:00Z"),
+                endDate: new Date("2024-12-10T12:00:00Z"),
                 createdBy: testUser._id
             });
             await eventToFetch.save();

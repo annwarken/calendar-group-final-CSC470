@@ -333,6 +333,16 @@ app.get("/api/event/details", async function(req, res){
 
 //save new event
 app.post("/api/save/event", async function(req, res){
+    //check if user has logged in
+    isAuth = await AuthenticateUser(req, res);
+    if(isAuth) {
+        console.log("User authenticated successfully");
+    }
+    else {
+        console.log("Failed to authenticate user");
+        return res.status(200).redirect('/Login');
+    }
+    
     const { title, description, startDate, endDate } = req.body;
     console.log(req.body);
     
@@ -358,8 +368,15 @@ app.put("/api/save/event/:id", async function(req, res){
     const { title, description, startDate, endDate } = req.body;
     try {
         const updatedEvent = await Event.findByIdAndUpdate(id, { title, description, startDate, endDate }, { new: true });
-        console.log("Updated event: ", updatedEvent);
-        res.status(200).json(updatedEvent);
+        if(updatedEvent == null)
+        {
+            res.status(404).json({error: 'Could not find event'});    
+        }
+        else
+        {
+            console.log("Updated event: ", updatedEvent);
+            res.status(200).json(updatedEvent);    
+        }
     } catch (error) {
         res.status(500).json({ error: 'Failed to update event' });
     }
