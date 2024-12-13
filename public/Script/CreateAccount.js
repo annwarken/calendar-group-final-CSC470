@@ -10,6 +10,12 @@ document.getElementById("createAccountForm").addEventListener("submit", async fu
     }
     const errorMessage = document.getElementById("error-message");
 
+    Object.entries(newUser).forEach(([key, value]) => {
+        if (value.trim() === "") {
+            missingField = true;
+        }
+    });
+
     try {
         const response = await fetch("/CreateAccount", {
             method: "POST",
@@ -24,6 +30,9 @@ document.getElementById("createAccountForm").addEventListener("submit", async fu
             // Show error for existing username
             const data = await response.json();
             errorMessage.textContent = data.error;
+            errorMessage.style.display = "block";
+        }  else if (missingField){
+            errorMessage.textContent = "Please fill out all fields";
             errorMessage.style.display = "block";
         } else {
             // Handle other errors
