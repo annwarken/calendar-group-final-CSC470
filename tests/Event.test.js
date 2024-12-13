@@ -1,8 +1,8 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app"); 
-const User = require("../public/Script/models/User"); 
-const Event = require("../public/Script/models/Event"); 
+const User = require("./mocks/UserModelMock"); 
+const Event = require("./mocks/EventModelMock"); 
 
 describe("Event API Endpoints", () => {
     let testUser;
