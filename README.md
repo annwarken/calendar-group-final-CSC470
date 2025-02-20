@@ -22,4 +22,4 @@ Store users’ events/lists
 Log out
 
 ### Technology
-For the client side of our web application, we will be using HTML, JavaScript, and CSS. For the server side we will incorporate Node.js with Express.js and Passport.js for creating the API and user authentication respectively. We plan on using a library to help with creating the calendar aspect of our program, but we have not decided which one. We will also need to choose a database. Our web application will run on a linux server. To help manage our project, we will be using GitHub for version control and risk management.
+For the client side of our web application, we used HTML, JavaScript, and CSS. For the server side we incorporated Node.js with Express.js and Passport.js for creating the API and user authentication respectively. We used the FullCalendar library to help implement the calendar interface and some of its functionality. MongoDB was used to store user data.
